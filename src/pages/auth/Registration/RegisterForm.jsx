@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import {
@@ -14,21 +14,141 @@ import {
 
 import sideImg from "../../../assets/images/RegisterSide.svg";
 import { Link } from "react-router";
+import axios from "axios";
+import { imageUpload } from "../../../api/imageUpload";
+import useAuth from "../../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { errorCap } from "../../../utils/errorMessageCap";
 
 const RegisterForm = () => {
+  const { createUser, updateUserProfile } = useAuth();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [districts, setDistricts] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+
+  const [uploadedImageError, setUploadedImageError] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [upazilas, setUpazilas] = useState([]);
+  // district fetch
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      try {
+        const res = await axios.get("/districts.json");
+        setDistricts(res.data);
+      } catch (err) {
+        console.error("Error fetching districts:", err);
+      }
+    };
+
+    fetchDistricts();
+  }, []);
+
+  // upazila fetch
+  useEffect(() => {
+    const fetchUpazilas = async () => {
+      if (!selectedDistrict) return;
+
+      try {
+        const res = await axios.get("/upazilas.json");
+        const filteredUpazilas = res.data.filter(
+          (upazila) => String(upazila.district_id) === String(selectedDistrict) // ensure type match
+        );
+        setUpazilas(filteredUpazilas);
+      } catch (err) {
+        console.error("Error fetching upazilas:", err);
+      }
+    };
+
+    fetchUpazilas();
+  }, [selectedDistrict]);
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm();
 
   const password = watch("password");
+
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
+    setImagePreview(null);
+    const image = e.target.files[0];
+    try {
+      const imageURL = await imageUpload(image);
+      setImagePreview(imageURL);
+    } catch (err) {
+      setUploadedImageError("Image Uploaded Failed:", err);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    const { avatar, ...rest } = data;
+    const userData = { ...rest, photoUrl: imagePreview };
+    setIsSubmitting(true);
+    try {
+      const res = await createUser(userData.email, userData.password);
+      if (res.user) {
+        const updateDate = {
+          displayName: userData.name,
+          photoURL: userData.photoUrl,
+        };
+        updateUserProfile(updateDate)
+          .then(() => {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Registration Successful!",
+              text: "Welcome to BloodGrid. You're all set to begin.",
+              background: "#ffffff",
+              color: "#2c3e50",
+              iconColor: "#27ae60",
+              showConfirmButton: false,
+              timer: 1800,
+              customClass: {
+                popup: "shadow-lg rounded-md px-6 py-4",
+                title: "text-lg font-semibold",
+                htmlContainer: "text-sm",
+              },
+            });
+          })
+          .catch((err) => {
+            Swal.fire({
+              position: "center",
+              background: "red",
+              icon: "error",
+              title: err,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          });
+      }
+    } catch (err) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: err.code ? errorCap(err.code) : "Something went wrong.",
+        color: "#333",
+        iconColor: "#e74c3c",
+        showConfirmButton: false,
+        timer: 1800,
+        toast: false,
+        customClass: {
+          popup: "shadow-lg rounded-md px-6 py-4",
+          title: "text-lg font-semibold",
+        },
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section className="min-h-[calc(100vh-7vh)] bg-base-200 py-6 px-4 relative overflow-hidden">
@@ -57,10 +177,7 @@ const RegisterForm = () => {
                 </p>
               </div>
 
-              <form
-                onSubmit={handleSubmit((data) => console.log(data))}
-                className="space-y-3"
-              >
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                 {/* Avatar Upload */}
                 <div className="flex flex-col items-center space-y-2">
                   <div className="relative group">
@@ -81,23 +198,34 @@ const RegisterForm = () => {
                       htmlFor="avatar"
                       className="absolute bottom-0 right-0 w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center cursor-pointer transform transition-transform duration-300 hover:scale-110 hover:shadow-lg"
                     >
-                      <FaUpload className="w-4 h-4" />
+                      <FaUpload
+                        className={`w-4 h-4 ${isUploading && "animate-bounce"}`}
+                      />
                     </label>
                     <input
                       type="file"
                       id="avatar"
-                      className="hidden"
                       accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) setImagePreview(URL.createObjectURL(file));
-                      }}
+                      {...register("avatar", {
+                        required: "Profile image is required",
+                      })}
+                      onChange={handleImageUpload}
+                      className="hidden"
                     />
                   </div>
                   <span className="text-sm text-base-content/60">
                     Upload your photo
                   </span>
+                  {errors.avatar && (
+                    <span className="text-error text-sm">
+                      {errors.avatar.message}
+                    </span>
+                  )}
                 </div>
+
+                {uploadedImageError && (
+                  <p className="text-red-500 text-xs">{uploadedImageError}</p>
+                )}
 
                 {/* Form Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -224,9 +352,9 @@ const RegisterForm = () => {
                         }`}
                       >
                         <option value="">Select District</option>
-                        {["Dhaka", "Chittagong", "Rajshahi"].map((district) => (
-                          <option key={district} value={district}>
-                            {district}
+                        {districts.map((district) => (
+                          <option key={district.id} value={district.id}>
+                            {district.name}
                           </option>
                         ))}
                       </select>
@@ -249,20 +377,20 @@ const RegisterForm = () => {
                     </label>
                     <div className="relative">
                       <select
-                        {...register("district", {
-                          required: "District is required",
+                        disabled={!upazilas.length}
+                        {...register("upazila", {
+                          required: "Upazila is required",
                         })}
-                        onChange={(e) => setSelectedDistrict(e.target.value)}
                         className={`select select-bordered w-full pl-10 ${
-                          errors.district
+                          errors.upazila
                             ? "select-error"
                             : "focus:select-primary"
                         }`}
                       >
-                        <option value="">Select District</option>
-                        {["Dhaka", "Chittagong", "Rajshahi"].map((district) => (
-                          <option key={district} value={district}>
-                            {district}
+                        <option value="">Select Upazila</option>
+                        {upazilas.map((upazila) => (
+                          <option key={upazila.id} value={upazila.name}>
+                            {upazila.name}
                           </option>
                         ))}
                       </select>

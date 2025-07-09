@@ -12,8 +12,12 @@ import {
   FaFacebook,
 } from "react-icons/fa";
 import sideImg from "../../../assets/images/authentication.svg";
+import useAuth from "../../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { errorCap } from "../../../utils/errorMessageCap";
 
 const Login = () => {
+  const { loginUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -24,10 +28,49 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    console.log(data);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
+    try {
+      const res = await loginUser(data.email, data.password);
+      if (res.user) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Login Successful",
+          text: "Welcome back to BloodGrid!",
+          background: "#ffffff",
+          color: "#2c3e50",
+          iconColor: "#3498db",
+          showConfirmButton: false,
+          timer: 1600,
+          customClass: {
+            popup: "shadow-lg rounded-md px-6 py-4",
+            title: "text-lg font-semibold",
+            htmlContainer: "text-sm",
+          },
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Login Failed",
+        text:
+          err.code == "auth/invalid-credential"
+            ? "The email or password you entered is incorrect."
+            : "Something went wrong. Please try again.",
+        background: "#fff",
+        color: "#2c3e50",
+        iconColor: "#e74c3c",
+        showConfirmButton: false,
+        timer: 1800,
+        customClass: {
+          popup: "shadow-lg rounded-md px-6 py-4",
+          title: "text-lg font-semibold",
+          htmlContainer: "text-sm",
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -181,8 +224,7 @@ const Login = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="hidden lg:block flex-1/2"
           >
-<img src={sideImg} alt="" />
-
+            <img src={sideImg} alt="" />
           </motion.div>
         </div>
       </div>
