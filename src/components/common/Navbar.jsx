@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "../Logo/Logo";
 import ThemeToggle from "../Theme/ThemeToggle";
 import Container from "./Container";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 const Navbar = () => {
   const navLinks = (
     <>
@@ -60,7 +60,7 @@ const Navbar = () => {
 
           <div className="navbar-end gap-2">
             <ThemeToggle />
-            <a className="btn btn-primary hidden lg:flex">Button</a>
+            <Link to={'/auth/register'} className="btn btn-primary hidden lg:flex">Register</Link>
             <a className="btn btn-primary btn-outline">Button</a>
           </div>
         </div>
