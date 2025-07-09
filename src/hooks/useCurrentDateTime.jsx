@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 
-const useCurrentDateTime = (sliceEnd = 19, live = true) => {
+const useCurrentDateTime = (type = "full", live = true) => {
   const getFormattedDateTime = () => {
     const now = new Date();
-    return now.toISOString().slice(0, sliceEnd).replace("T", " ");
+    if (type === "date") {
+      return now.toLocaleString().split(',')[0];
+    } else if(type=="time"){
+      return now.toLocaleString().split(',')[1];
+    } else{
+      return now.toLocaleString()
+    }
   };
 
   const [dateTime, setDateTime] = useState(getFormattedDateTime());
@@ -16,7 +22,7 @@ const useCurrentDateTime = (sliceEnd = 19, live = true) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [live, sliceEnd]);
+  }, [live]);
 
   return dateTime;
 };

@@ -10,10 +10,10 @@ const Navbar = () => {
         <NavLink to={"/"}>Home</NavLink>
       </li>
       <li>
-        <NavLink to={'/donation-requests'}>Donation Requests</NavLink>
+        <NavLink to={"/donation-requests"}>Donation Requests</NavLink>
       </li>
       <li>
-        <NavLink to={'/blog'}>Blog</NavLink>
+        <NavLink to={"/blog"}>Blog</NavLink>
       </li>
     </>
   );
@@ -60,8 +60,18 @@ const Navbar = () => {
 
           <div className="navbar-end gap-2">
             <ThemeToggle />
-            <Link to={'/auth/register'} className="btn btn-primary hidden lg:flex">Register</Link>
-            <a className="btn btn-primary btn-outline">Button</a>
+            <Link
+              to={"/auth/register"}
+              className="btn btn-primary hidden lg:flex"
+            >
+              Register
+            </Link>
+            <Link
+              to={"/auth/login"}
+              className="btn hover:bg-base-content hover:text-base-200 btn-outline"
+            >
+              Login
+            </Link>
           </div>
         </div>
       </Container>
