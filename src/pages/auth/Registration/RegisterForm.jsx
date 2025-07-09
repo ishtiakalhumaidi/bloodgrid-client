@@ -122,11 +122,17 @@ const RegisterForm = () => {
           .catch((err) => {
             Swal.fire({
               position: "center",
-              background: "red",
               icon: "error",
-              title: err,
+              title: err.code ? errorCap(err.code) : "Something went wrong.",
+              color: "#333",
+              iconColor: "#e74c3c",
               showConfirmButton: false,
-              timer: 1500,
+              timer: 1800,
+              toast: false,
+              customClass: {
+                popup: "shadow-lg rounded-md px-6 py-4",
+                title: "text-lg font-semibold",
+              },
             });
           });
       }
