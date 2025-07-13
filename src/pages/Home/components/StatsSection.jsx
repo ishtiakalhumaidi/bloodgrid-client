@@ -98,11 +98,11 @@ const StatsSection = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold tracking-tight text-center mb-6"
           >
-            Our{' '}
+            Our{" "}
             <span className="text-primary relative">
-               Impact
+              Impact
               <span className="absolute bottom-0 left-0 w-full h-1 bg-primary/20"></span>
-            </span> {' '}
+            </span>{" "}
             in Numbers
           </motion.h2>
           <p className="text-base-content/70 max-w-2xl mx-auto">
@@ -150,14 +150,6 @@ const StatsSection = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* Current User Info */}
-        <motion.div variants={statVariants} className="mt-12 text-center">
-          <p className="text-base-content/70">
-            Logged in as{" "}
-            <span className="text-primary font-semibold">@Ishtiak13</span>
-          </p>
-        </motion.div>
       </motion.div>
     </section>
   );

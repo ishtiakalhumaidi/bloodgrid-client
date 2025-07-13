@@ -5,6 +5,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import RegisterForm from "../pages/auth/Registration/RegisterForm";
 import Login from "../pages/auth/Registration/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
+import Profile from "../pages/dashboard/common/Profile";
+import DashboardHome from "../pages/dashboard/common/DashboardHome";
 
 export const router = createBrowserRouter([
   {
@@ -34,5 +36,15 @@ export const router = createBrowserRouter([
   {
     path: "dashboard",
     element: <DashboardLayout />,
+    children: [
+      {
+        index: true,
+        Component: DashboardHome,
+      },
+      {
+        path: "profile",
+        Component: Profile,
+      },
+    ],
   },
 ]);

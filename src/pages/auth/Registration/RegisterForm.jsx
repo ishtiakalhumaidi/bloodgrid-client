@@ -19,6 +19,7 @@ import { imageUpload } from "../../../api/imageUpload";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { errorCap } from "../../../utils/errorMessageCap";
+import useAxios from "../../../hooks/useAxios";
 
 const RegisterForm = () => {
   const { createUser, updateUserProfile } = useAuth();
@@ -27,6 +28,7 @@ const RegisterForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [districts, setDistricts] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const axiosInstance = useAxios();
 
   const [uploadedImageError, setUploadedImageError] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -91,7 +93,14 @@ const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     const { avatar, ...rest } = data;
-    const userData = { ...rest, photoUrl: imagePreview };
+    const selectedDistrictData = districts.find(
+      (district) => district.id == rest.district
+    );
+    const userData = {
+      ...rest,
+      photoUrl: imagePreview,
+      district: selectedDistrictData?.name,
+    };
     setIsSubmitting(true);
     try {
       const res = await createUser(userData.email, userData.password);
@@ -101,23 +110,27 @@ const RegisterForm = () => {
           photoURL: userData.photoUrl,
         };
         updateUserProfile(updateDate)
-          .then(() => {
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              title: "Registration Successful!",
-              text: "Welcome to BloodGrid. You're all set to begin.",
-              background: "#ffffff",
-              color: "#2c3e50",
-              iconColor: "#27ae60",
-              showConfirmButton: false,
-              timer: 1800,
-              customClass: {
-                popup: "shadow-lg rounded-md px-6 py-4",
-                title: "text-lg font-semibold",
-                htmlContainer: "text-sm",
-              },
-            });
+          .then(async () => {
+            try {
+              const { password, confirmPassword, ...userInfo } = userData;
+              const res = await axiosInstance.post("/add-user", userInfo);
+              if (res.data.insertedId) {
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: "Registration Successful!",
+                  text: "Welcome to BloodGrid. You're all set to begin.",
+                  background: "#ffffff",
+                  color: "#2c3e50",
+                  iconColor: "#27ae60",
+                  showConfirmButton: false,
+                  timer: 1800,
+                });
+                reset();
+              }
+            } catch (err) {
+              console.log(err);
+            }
           })
           .catch((err) => {
             Swal.fire({
@@ -129,10 +142,6 @@ const RegisterForm = () => {
               showConfirmButton: false,
               timer: 1800,
               toast: false,
-              customClass: {
-                popup: "shadow-lg rounded-md px-6 py-4",
-                title: "text-lg font-semibold",
-              },
             });
           });
       }
@@ -146,10 +155,6 @@ const RegisterForm = () => {
         showConfirmButton: false,
         timer: 1800,
         toast: false,
-        customClass: {
-          popup: "shadow-lg rounded-md px-6 py-4",
-          title: "text-lg font-semibold",
-        },
       });
     } finally {
       setIsSubmitting(false);
