@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import useRole from "../../../hooks/useRole";
 
 const Banner = () => {
+  const { user } = useAuth();
+  const role = useRole();
   return (
     <section className="relative min-h-[93vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
       <div
@@ -17,7 +21,17 @@ const Banner = () => {
         a few clicks.
       </p>
       <div className="flex flex-col md:flex-row gap-4">
-        <Link className="btn btn-primary px-6">Join as a Donor</Link>
+        {user ? (
+          role.role !== "volunteer" && (
+            <Link to={"/"} className="btn btn-primary px-6">
+              Become a Volunteer
+            </Link>
+          )
+        ) : (
+          <Link to={"/auth/register"} className="btn btn-primary px-6">
+            Join as a Donor
+          </Link>
+        )}
         <Link to={"/search-donor"} className="btn btn-outline px-6">
           Search Donors
         </Link>

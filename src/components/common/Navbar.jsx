@@ -60,7 +60,7 @@ const Navbar = () => {
         <NavLink to={"/donation-requests"}>Donation Requests</NavLink>
       </li>
       <li>
-        <NavLink to={"/blog"}>Blog</NavLink>
+        <NavLink to={"/blogs"}>Blogs</NavLink>
       </li>
     </>
   );
