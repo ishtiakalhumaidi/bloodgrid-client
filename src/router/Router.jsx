@@ -14,6 +14,7 @@ import DonationRequestDetails from "../pages/donationRequest/DonationRequestDeta
 import CreateBlog from "../pages/dashboard/common/CreateBlog";
 import BlogsPage from "../pages/blogs/BlogsPage";
 import BlogDetails from "../pages/blogs/BlogDetails";
+import MyDonationReq from "../pages/dashboard/Donor/MyDonationReq";
 
 export const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
       {
         path: "write-blog",
         Component: CreateBlog,
+      },
+      {
+        path: "my-donation-requests",
+        Component: MyDonationReq,
       },
       {
         path: "profile",

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
+
 import { motion, AnimatePresence } from "framer-motion";
+import { BiSolidDonateBlood } from "react-icons/bi";
 import {
   FaHome,
   FaBell,
@@ -163,9 +165,9 @@ const DashboardLayout = () => {
             </motion.li>
             <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
               <DashboardNavLink
-                title={"View Fundings"}
-                icon={FaDonate}
-                location={"/dashboard/volunteer/funds"}
+                title={"My Donation Requests"}
+                icon={BiSolidDonateBlood}
+                location={"/dashboard/my-donation-requests"}
               />
             </motion.li>
           </ul>
@@ -268,7 +270,7 @@ const DashboardLayout = () => {
         animate="visible"
       >
         <div className="flex justify-between items-center px-6 py-4">
-          <Link to="/" className="flex items-center gap-3">
+          
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
@@ -278,7 +280,7 @@ const DashboardLayout = () => {
             <span className="text-xl font-bold text-primary hidden md:inline">
               Dashboard
             </span>
-          </Link>
+         
           <div className="flex items-center gap-4">
             <motion.div
               whileHover={{ scale: 1.05 }}

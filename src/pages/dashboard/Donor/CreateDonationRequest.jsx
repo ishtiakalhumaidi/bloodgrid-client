@@ -69,7 +69,7 @@ const CreateDonationRequest = () => {
   const { data: userInfo, isLoading } = useQuery({
     queryKey: [user?.email],
     queryFn: async () => {
-      const res = axiosSecure.get(`/user?email=${user.email}`);
+      const res = await axiosSecure.get(`/user?email=${user.email}`);
       return res.data;
     },
   });
@@ -109,7 +109,6 @@ const CreateDonationRequest = () => {
           color: "#333333",
           confirmButtonColor: "#48484a",
           confirmButtonText: "Great!",
-         
         });
 
         reset();

@@ -15,21 +15,19 @@ const DashboardNavLink = ({ icon: Icon, title, location }) => {
     "text-gray-600 hover:bg-gray-50 hover:text-primary transition-all duration-200";
 
   return (
-    <li>
-      <NavLink
-        to={location}
-        end
-        onClick={handleDrawerClose}
-        className={({ isActive }) =>
-          `flex items-center gap-3 px-4 py-3 rounded-lg ${
-            isActive ? activeClassName : inactiveClassName
-          }`
-        }
-      >
-        <Icon className="text-lg" />
-        <span>{title}</span>
-      </NavLink>
-    </li>
+    <NavLink
+      to={location}
+      end
+      onClick={handleDrawerClose}
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-4 py-3 rounded-lg ${
+          isActive ? activeClassName : inactiveClassName
+        }`
+      }
+    >
+      <Icon className="text-lg" />
+      <span>{title}</span>
+    </NavLink>
   );
 };
 

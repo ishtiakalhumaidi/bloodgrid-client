@@ -342,7 +342,6 @@ const DonationRequestDetails = () => {
                   <h3 className="text-lg font-bold text-base-content">
                     Requester
                   </h3>
-                 
                 </div>
               </div>
 
@@ -353,7 +352,6 @@ const DonationRequestDetails = () => {
                     <p className="font-medium text-base-content">
                       {request.requesterName}
                     </p>
-                   
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -382,17 +380,46 @@ const DonationRequestDetails = () => {
                     Ready to Save a Life?
                   </h3>
                   <p className="text-base-content/70">
-                    Your blood donation can make all the difference
+                    Your blood donation can make all the difference.
                   </p>
                 </div>
 
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="btn btn-primary w-full btn-lg gap-2"
-                >
-                  <FaHeart />
-                  Donate Blood
-                </button>
+                {user.email === request.requesterEmail ? (
+                  <button
+                    className="btn btn-disabled w-full btn-lg gap-2 text-red-500 text-xs"
+                    disabled
+                  >
+                    You can't donate to your own request
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="btn btn-primary w-full btn-lg gap-2"
+                  >
+                    <FaHeart />
+                    Donate Blood
+                  </button>
+                )}
+              </motion.div>
+            )}
+            {request.status === "inprogress" && (
+              <motion.div
+                variants={itemVariants}
+                className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl p-6 shadow-lg border border-base-300"
+              >
+                <div className="text-center mb-6">
+                  <FaHeart className="text-4xl text-primary mx-auto mb-3" />
+                  <h3 className="text-xl font-bold text-info mb-2">
+                    Donor
+                  </h3>
+                  <p className="text-base-content/70">{request?.donor?.name}</p>
+                  <a
+                    href={`mailto:${request?.donor?.email}`}
+                    className="text-blue-300 hover:underline"
+                  >
+                    {request?.donor?.email}
+                  </a>
+                </div>
               </motion.div>
             )}
 
