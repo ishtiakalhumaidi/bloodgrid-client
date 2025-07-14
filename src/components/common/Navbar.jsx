@@ -54,6 +54,9 @@ const Navbar = () => {
         <NavLink to={"/"}>Home</NavLink>
       </li>
       <li>
+        <NavLink to={"/search-donor"}>Find A Donor</NavLink>
+      </li>
+      <li>
         <NavLink to={"/donation-requests"}>Donation Requests</NavLink>
       </li>
       <li>

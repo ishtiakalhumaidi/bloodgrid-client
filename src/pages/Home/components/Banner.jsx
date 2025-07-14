@@ -4,10 +4,10 @@ import { Link } from "react-router";
 const Banner = () => {
   return (
     <section className="relative min-h-[93vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-         <div
-    className="absolute inset-0 bg-cover bg-bottom  -z-10"
-    style={{ backgroundImage: "url('/BannerBG.svg')" }}
-  ></div>
+      <div
+        className="absolute inset-0 bg-cover bg-bottom  -z-10"
+        style={{ backgroundImage: "url('/BannerBG.svg')" }}
+      ></div>
       <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
         Be the <span className="text-primary">Lifeline</span> Someone's Waiting
         For.
@@ -18,7 +18,9 @@ const Banner = () => {
       </p>
       <div className="flex flex-col md:flex-row gap-4">
         <Link className="btn btn-primary px-6">Join as a Donor</Link>
-        <Link className="btn btn-outline px-6">Search Donors</Link>
+        <Link to={"/search-donor"} className="btn btn-outline px-6">
+          Search Donors
+        </Link>
       </div>
     </section>
   );

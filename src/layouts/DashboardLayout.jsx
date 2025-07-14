@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaHome,
   FaBell,
@@ -12,6 +13,7 @@ import {
   FaHandsHelping,
   FaBars,
   FaUser,
+  FaTimes,
 } from "react-icons/fa";
 
 import Logo from "../components/Logo/Logo";
@@ -26,13 +28,64 @@ const DashboardLayout = () => {
   const { user } = useAuth();
   const { role } = useRole();
   const safeUser = user || {};
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const sidebarVariants = {
+    hidden: { x: -320, opacity: 0 },
+    visible: { 
+      x: 0, 
+      opacity: 1,
+      transition: { 
+        type: "spring", 
+        stiffness: 100,
+        damping: 20,
+        staggerChildren: 0.1
+      }
+    },
+    exit: { 
+      x: -320, 
+      opacity: 0,
+      transition: { duration: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: { 
+      x: 0, 
+      opacity: 1,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const headerVariants = {
+    hidden: { y: -60, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
 
   const navLinks = (
-    <>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: { transition: { staggerChildren: 0.1 } }
+      }}
+    >
       {/* User Info */}
-      <div className="px-4 py-3 mb-6">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary/20">
+      <motion.div 
+        className="px-4 py-6 mb-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg mx-3 mt-3"
+        variants={itemVariants}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <motion.div 
+            className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/30 shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
             {safeUser?.photoURL ? (
               <img
                 src={safeUser.photoURL}
@@ -40,116 +93,307 @@ const DashboardLayout = () => {
                 className="w-full h-full object-cover"
               />
             ) : safeUser?.displayName ? (
-              <div className="bg-primary text-white font-bold flex items-center justify-center w-full h-full">
+              <div className="bg-gradient-to-br from-primary to-secondary text-white font-bold flex items-center justify-center w-full h-full text-lg">
                 {safeUser.displayName.charAt(0)}
               </div>
             ) : (
-              <div className="bg-primary text-white font-bold flex items-center justify-center w-full h-full">
+              <div className="bg-gradient-to-br from-primary to-secondary text-white font-bold flex items-center justify-center w-full h-full text-lg">
                 ?
               </div>
             )}
-          </div>
+          </motion.div>
           <div>
-            <h3 className="font-semibold text-gray-800">Hello,</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="font-semibold text-base-content">Hello,</h3>
+            <p className="text-sm text-base-content/70 font-medium">
               {safeUser?.displayName || "Anonymous User"}
             </p>
           </div>
         </div>
-        <div className="text-xs text-secondary">
+        <motion.div 
+          className="text-xs text-base-content/60 bg-base-200 px-3 py-1 rounded-full inline-block"
+          animate={{ opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
           {format(useCurrentDateTime(), "dd MMMM yyyy, hh:mm:ss a")}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Main Menu */}
-      <div className="px-4 mb-4">
-        <h3 className="text-xs text-secondary uppercase mb-4">Main Menu</h3>
-        <ul className="space-y-1">
-          <DashboardNavLink title={"Dashboard"} icon={FaHome} location={"/dashboard"} />
-          <DashboardNavLink title={"Donation Requests"} icon={FaHeartbeat} location={"/dashboard/donation-requests"} />
-          <DashboardNavLink title={"Search Donors"} icon={FaSearch} location={"/dashboard/search"} />
+      <motion.div className="px-4 mb-6" variants={itemVariants}>
+        <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">Main Menu</h3>
+        <ul className="space-y-2">
+          <motion.li
+            whileHover={{ x: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            <DashboardNavLink title={"Dashboard"} icon={FaHome} location={"/dashboard"} />
+          </motion.li>
+          <motion.li
+            whileHover={{ x: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            <DashboardNavLink title={"Search Donors"} icon={FaSearch} location={"/dashboard/search"} />
+          </motion.li>
         </ul>
-      </div>
+      </motion.div>
+
+      {/* Donor Panel */}
+      {role === "donor" && (
+        <motion.div 
+          className="px-4 mt-8"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">
+            Donor Panel
+          </h3>
+          <ul className="space-y-2">
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"Create Donation Requests"} 
+                icon={FaHeartbeat} 
+                location={"/dashboard/create-donation-request"} 
+              />
+            </motion.li>
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"View Fundings"} 
+                icon={FaDonate} 
+                location={"/dashboard/volunteer/funds"} 
+              />
+            </motion.li>
+          </ul>
+        </motion.div>
+      )}
 
       {/* Volunteer Panel */}
       {role === "volunteer" && (
-        <div className="px-4 mt-8">
-          <h3 className="text-xs text-secondary uppercase mb-4">Volunteer Panel</h3>
-          <ul className="space-y-1">
-            <DashboardNavLink title={"Create Request"} icon={FaHandsHelping} location={"/dashboard/volunteer/create-request"} />
-            <DashboardNavLink title={"View Fundings"} icon={FaDonate} location={"/dashboard/volunteer/funds"} />
+        <motion.div 
+          className="px-4 mt-8"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">
+            Volunteer Panel
+          </h3>
+          <ul className="space-y-2">
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"Create Request"} 
+                icon={FaHandsHelping} 
+                location={"/dashboard/volunteer/create-request"} 
+              />
+            </motion.li>
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"View Fundings"} 
+                icon={FaDonate} 
+                location={"/dashboard/volunteer/funds"} 
+              />
+            </motion.li>
           </ul>
-        </div>
+        </motion.div>
       )}
 
       {/* Admin Panel */}
       {role === "admin" && (
-        <div className="px-4 mt-8">
-          <h3 className="text-xs text-secondary uppercase mb-4">Admin Panel</h3>
-          <ul className="space-y-1">
-            <DashboardNavLink title={"Manage Users"} icon={FaUsers} location={"/dashboard/admin/users"} />
-            <DashboardNavLink title={"Manage Blogs"} icon={FaBlog} location={"/dashboard/admin/blogs"} />
-            <DashboardNavLink title={"Site Overview"} icon={FaChartLine} location={"/dashboard/admin/overview"} />
+        <motion.div 
+          className="px-4 mt-8"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">
+            Admin Panel
+          </h3>
+          <ul className="space-y-2">
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"Manage Users"} 
+                icon={FaUsers} 
+                location={"/dashboard/admin/users"} 
+              />
+            </motion.li>
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"Manage Blogs"} 
+                icon={FaBlog} 
+                location={"/dashboard/admin/blogs"} 
+              />
+            </motion.li>
+            <motion.li
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DashboardNavLink 
+                title={"Site Overview"} 
+                icon={FaChartLine} 
+                location={"/dashboard/admin/overview"} 
+              />
+            </motion.li>
           </ul>
-        </div>
+        </motion.div>
       )}
 
       {/* Settings */}
-      <div className="px-4 mt-8">
-        <h3 className="text-xs text-secondary uppercase mb-4">Settings</h3>
-        <ul className="space-y-1">
-          <DashboardNavLink title={"Profile"} icon={FaUser} location={"/dashboard/profile"} />
+      <motion.div className="px-4 mt-8" variants={itemVariants}>
+        <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">
+          Settings
+        </h3>
+        <ul className="space-y-2">
+          <motion.li
+            whileHover={{ x: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            <DashboardNavLink 
+              title={"Profile"} 
+              icon={FaUser} 
+              location={"/dashboard/profile"} 
+            />
+          </motion.li>
         </ul>
-      </div>
-    </>
+      </motion.div>
+    </motion.div>
   );
 
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <title>Dashboard | BloodGrid</title>
 
-      <header className="fixed top-0 left-0 right-0 bg-base-100 z-50 border-b shadow-sm">
-        <div className="flex justify-between items-center px-6 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <Logo />
+      <motion.header 
+        className="fixed top-0 left-0 right-0 bg-base-100/95 backdrop-blur-sm z-50 border-b shadow-sm"
+        variants={headerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <div className="flex justify-between items-center px-6 py-4">
+          <Link to="/" className="flex items-center gap-3">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Logo />
+            </motion.div>
             <span className="text-xl font-bold text-primary hidden md:inline">Dashboard</span>
           </Link>
           <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <button className="p-2 hover:bg-gray-100 rounded-full relative">
-              <FaBell className="text-gray-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <label htmlFor="my-drawer-2" className="drawer-button lg:hidden p-2 hover:bg-gray-100 rounded-full cursor-pointer">
-              <FaBars className="text-gray-600" />
-            </label>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ThemeToggle />
+            </motion.div>
+            <motion.button 
+              className="p-2 hover:bg-base-200 rounded-full relative transition-colors duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaBell className="text-base-content/70" />
+              <motion.span 
+                className="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
+            </motion.button>
+            <motion.button
+              className="lg:hidden p-2 hover:bg-base-200 rounded-full cursor-pointer transition-colors duration-200"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isMobileMenuOpen ? (
+                <FaTimes className="text-base-content/70" />
+              ) : (
+                <FaBars className="text-base-content/70" />
+              )}
+            </motion.button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      <div className="lg:flex flex-1 pt-[61px]">
-        {/* Sidebar */}
-        <aside className="hidden lg:block w-80 fixed top-[61px] bottom-0 left-0 border-r shadow z-40">
-          <div className="h-full overflow-y-auto">{navLinks}</div>
-        </aside>
-
-        {/* Drawer (Mobile) */}
-        <div className="drawer lg:hidden">
-          <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-side fixed top-[61px] bottom-0 left-0 z-40">
-            <label htmlFor="my-drawer-2" className="drawer-overlay bg-black/50"></label>
-            <nav className="w-80 min-h-full bg-base-100">{navLinks}</nav>
+      <div className="lg:flex flex-1 pt-[73px]">
+        {/* Desktop Sidebar */}
+        <motion.aside 
+          className="hidden lg:block w-80 fixed top-[73px] bottom-0 left-0 border-r shadow-lg z-40 bg-base-100"
+          variants={sidebarVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-base-300 scrollbar-track-base-100">
+            {navLinks}
           </div>
-        </div>
+        </motion.aside>
+
+        {/* Mobile Sidebar */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              className="lg:hidden fixed top-[73px] bottom-0 left-0 right-0 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div 
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+              <motion.nav 
+                className="w-80 h-full bg-base-100 shadow-2xl"
+                variants={sidebarVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-base-300 scrollbar-track-base-100">
+                  {navLinks}
+                </div>
+              </motion.nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Main Content */}
-        <main className="flex-1 bg-base-100 lg:ml-80">
-          <div className="min-h-[calc(100vh-61px)] overflow-y-auto">
-            <div className="overflow-y-auto">
+        <motion.main 
+          className="flex-1 bg-base-100 lg:ml-80"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="min-h-[calc(100vh-73px)] overflow-y-auto">
+            <motion.div 
+              className="overflow-y-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+            >
               <Outlet />
-            </div>
+            </motion.div>
           </div>
-        </main>
+        </motion.main>
       </div>
     </div>
   );

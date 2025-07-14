@@ -7,6 +7,8 @@ import Login from "../pages/auth/Registration/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Profile from "../pages/dashboard/common/Profile";
 import DashboardHome from "../pages/dashboard/common/DashboardHome";
+import SearchDonor from "../pages/SearchDonor";
+import CreateDonationRequest from "../pages/dashboard/Donor/CreateDonationRequest";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +18,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         Component: Home,
+      },
+      {
+        path: "search-donor",
+        Component: SearchDonor,
       },
     ],
   },
@@ -40,6 +46,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         Component: DashboardHome,
+      },
+      {
+        path: "create-donation-request",
+        Component: CreateDonationRequest,
       },
       {
         path: "profile",
