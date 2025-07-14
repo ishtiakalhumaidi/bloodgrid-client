@@ -15,6 +15,7 @@ import {
   FaUser,
   FaTimes,
 } from "react-icons/fa";
+import { TfiWrite } from "react-icons/tfi";
 
 import Logo from "../components/Logo/Logo";
 import ThemeToggle from "../components/Theme/ThemeToggle";
@@ -32,39 +33,39 @@ const DashboardLayout = () => {
 
   const sidebarVariants = {
     hidden: { x: -320, opacity: 0 },
-    visible: { 
-      x: 0, 
+    visible: {
+      x: 0,
       opacity: 1,
-      transition: { 
-        type: "spring", 
+      transition: {
+        type: "spring",
         stiffness: 100,
         damping: 20,
-        staggerChildren: 0.1
-      }
+        staggerChildren: 0.1,
+      },
     },
-    exit: { 
-      x: -320, 
+    exit: {
+      x: -320,
       opacity: 0,
-      transition: { duration: 0.2 }
-    }
+      transition: { duration: 0.2 },
+    },
   };
 
   const itemVariants = {
     hidden: { x: -20, opacity: 0 },
-    visible: { 
-      x: 0, 
+    visible: {
+      x: 0,
       opacity: 1,
-      transition: { duration: 0.3 }
-    }
+      transition: { duration: 0.3 },
+    },
   };
 
   const headerVariants = {
     hidden: { y: -60, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
 
   const navLinks = (
@@ -72,16 +73,16 @@ const DashboardLayout = () => {
       initial="hidden"
       animate="visible"
       variants={{
-        visible: { transition: { staggerChildren: 0.1 } }
+        visible: { transition: { staggerChildren: 0.1 } },
       }}
     >
       {/* User Info */}
-      <motion.div 
+      <motion.div
         className="px-4 py-6 mb-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg mx-3 mt-3"
         variants={itemVariants}
       >
         <div className="flex items-center gap-3 mb-4">
-          <motion.div 
+          <motion.div
             className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/30 shadow-lg"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
@@ -109,7 +110,7 @@ const DashboardLayout = () => {
             </p>
           </div>
         </div>
-        <motion.div 
+        <motion.div
           className="text-xs text-base-content/60 bg-base-200 px-3 py-1 rounded-full inline-block"
           animate={{ opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 2, repeat: Infinity }}
@@ -120,26 +121,30 @@ const DashboardLayout = () => {
 
       {/* Main Menu */}
       <motion.div className="px-4 mb-6" variants={itemVariants}>
-        <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">Main Menu</h3>
+        <h3 className="text-xs text-base-content/60 uppercase mb-4 font-semibold tracking-wider">
+          Main Menu
+        </h3>
         <ul className="space-y-2">
-          <motion.li
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            <DashboardNavLink title={"Dashboard"} icon={FaHome} location={"/dashboard"} />
+          <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+            <DashboardNavLink
+              title={"Dashboard"}
+              icon={FaHome}
+              location={"/dashboard"}
+            />
           </motion.li>
-          <motion.li
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            <DashboardNavLink title={"Search Donors"} icon={FaSearch} location={"/dashboard/search"} />
+          <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+            <DashboardNavLink
+              title={"Write A Blog"}
+              icon={TfiWrite}
+              location={"/dashboard/write-blog"}
+            />
           </motion.li>
         </ul>
       </motion.div>
 
       {/* Donor Panel */}
       {role === "donor" && (
-        <motion.div 
+        <motion.div
           className="px-4 mt-8"
           variants={itemVariants}
           initial="hidden"
@@ -149,24 +154,18 @@ const DashboardLayout = () => {
             Donor Panel
           </h3>
           <ul className="space-y-2">
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"Create Donation Requests"} 
-                icon={FaHeartbeat} 
-                location={"/dashboard/create-donation-request"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"Create Donation Requests"}
+                icon={FaHeartbeat}
+                location={"/dashboard/create-donation-request"}
               />
             </motion.li>
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"View Fundings"} 
-                icon={FaDonate} 
-                location={"/dashboard/volunteer/funds"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"View Fundings"}
+                icon={FaDonate}
+                location={"/dashboard/volunteer/funds"}
               />
             </motion.li>
           </ul>
@@ -175,7 +174,7 @@ const DashboardLayout = () => {
 
       {/* Volunteer Panel */}
       {role === "volunteer" && (
-        <motion.div 
+        <motion.div
           className="px-4 mt-8"
           variants={itemVariants}
           initial="hidden"
@@ -185,24 +184,18 @@ const DashboardLayout = () => {
             Volunteer Panel
           </h3>
           <ul className="space-y-2">
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"Create Request"} 
-                icon={FaHandsHelping} 
-                location={"/dashboard/volunteer/create-request"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"Create Request"}
+                icon={FaHandsHelping}
+                location={"/dashboard/volunteer/create-request"}
               />
             </motion.li>
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"View Fundings"} 
-                icon={FaDonate} 
-                location={"/dashboard/volunteer/funds"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"View Fundings"}
+                icon={FaDonate}
+                location={"/dashboard/volunteer/funds"}
               />
             </motion.li>
           </ul>
@@ -211,7 +204,7 @@ const DashboardLayout = () => {
 
       {/* Admin Panel */}
       {role === "admin" && (
-        <motion.div 
+        <motion.div
           className="px-4 mt-8"
           variants={itemVariants}
           initial="hidden"
@@ -221,34 +214,25 @@ const DashboardLayout = () => {
             Admin Panel
           </h3>
           <ul className="space-y-2">
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"Manage Users"} 
-                icon={FaUsers} 
-                location={"/dashboard/admin/users"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"Manage Users"}
+                icon={FaUsers}
+                location={"/dashboard/admin/users"}
               />
             </motion.li>
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"Manage Blogs"} 
-                icon={FaBlog} 
-                location={"/dashboard/admin/blogs"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"Manage Blogs"}
+                icon={FaBlog}
+                location={"/dashboard/admin/blogs"}
               />
             </motion.li>
-            <motion.li
-              whileHover={{ x: 4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <DashboardNavLink 
-                title={"Site Overview"} 
-                icon={FaChartLine} 
-                location={"/dashboard/admin/overview"} 
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"Site Overview"}
+                icon={FaChartLine}
+                location={"/dashboard/admin/overview"}
               />
             </motion.li>
           </ul>
@@ -261,14 +245,11 @@ const DashboardLayout = () => {
           Settings
         </h3>
         <ul className="space-y-2">
-          <motion.li
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            <DashboardNavLink 
-              title={"Profile"} 
-              icon={FaUser} 
-              location={"/dashboard/profile"} 
+          <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+            <DashboardNavLink
+              title={"Profile"}
+              icon={FaUser}
+              location={"/dashboard/profile"}
             />
           </motion.li>
         </ul>
@@ -280,7 +261,7 @@ const DashboardLayout = () => {
     <div className="min-h-screen flex flex-col bg-base-100">
       <title>Dashboard | BloodGrid</title>
 
-      <motion.header 
+      <motion.header
         className="fixed top-0 left-0 right-0 bg-base-100/95 backdrop-blur-sm z-50 border-b shadow-sm"
         variants={headerVariants}
         initial="hidden"
@@ -294,7 +275,9 @@ const DashboardLayout = () => {
             >
               <Logo />
             </motion.div>
-            <span className="text-xl font-bold text-primary hidden md:inline">Dashboard</span>
+            <span className="text-xl font-bold text-primary hidden md:inline">
+              Dashboard
+            </span>
           </Link>
           <div className="flex items-center gap-4">
             <motion.div
@@ -303,13 +286,13 @@ const DashboardLayout = () => {
             >
               <ThemeToggle />
             </motion.div>
-            <motion.button 
+            <motion.button
               className="p-2 hover:bg-base-200 rounded-full relative transition-colors duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <FaBell className="text-base-content/70" />
-              <motion.span 
+              <motion.span
                 className="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
@@ -333,7 +316,7 @@ const DashboardLayout = () => {
 
       <div className="lg:flex flex-1 pt-[73px]">
         {/* Desktop Sidebar */}
-        <motion.aside 
+        <motion.aside
           className="hidden lg:block w-80 fixed top-[73px] bottom-0 left-0 border-r shadow-lg z-40 bg-base-100"
           variants={sidebarVariants}
           initial="hidden"
@@ -354,14 +337,14 @@ const DashboardLayout = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <motion.div 
+              <motion.div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={() => setIsMobileMenuOpen(false)}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               />
-              <motion.nav 
+              <motion.nav
                 className="w-80 h-full bg-base-100 shadow-2xl"
                 variants={sidebarVariants}
                 initial="hidden"
@@ -377,14 +360,14 @@ const DashboardLayout = () => {
         </AnimatePresence>
 
         {/* Main Content */}
-        <motion.main 
+        <motion.main
           className="flex-1 bg-base-100 lg:ml-80"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="min-h-[calc(100vh-73px)] overflow-y-auto">
-            <motion.div 
+            <motion.div
               className="overflow-y-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
