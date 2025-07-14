@@ -1,22 +1,21 @@
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import DonorDashboardHome from "../Donor/DonorDashboardHome";
-
+import useRole from "../../../hooks/useRole";
+import AdminDashboardHome from "../Admin/AdminDashboardHome";
 
 const DashboardHome = () => {
-  const { user, userInfo } = useAuth();
+  const { user } = useAuth();
 
-  const role = userInfo?.role || user?.role || "donor";
+  const { role } = useRole();
 
   return (
     <div>
       {role === "admin" ? (
-        ""
-      ) : // <AdminDashboardHome />
-      role === "volunteer" ? (
-        ""
+        <AdminDashboardHome />
+      ) : role === "volunteer" ? (
+        "" // <VolunteerDashboardHome />
       ) : (
-        // <VolunteerDashboardHome />
         <DonorDashboardHome />
       )}
     </div>

@@ -15,6 +15,8 @@ import CreateBlog from "../pages/dashboard/common/CreateBlog";
 import BlogsPage from "../pages/blogs/BlogsPage";
 import BlogDetails from "../pages/blogs/BlogDetails";
 import MyDonationReq from "../pages/dashboard/Donor/MyDonationReq";
+import AllUsersPage from "../pages/dashboard/Admin/AllUser";
+import AllBloodDonationRequests from "../pages/dashboard/Admin/AllBloodDonationRequests ";
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +86,14 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         Component: Profile,
+      },
+      {
+        path: "admin/all-blood-donation-request",
+        Component: AllBloodDonationRequests,
+      },
+      {
+        path: "admin/all-users",
+        Component: AllUsersPage,
       },
     ],
   },

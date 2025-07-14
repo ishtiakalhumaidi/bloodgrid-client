@@ -220,7 +220,14 @@ const DashboardLayout = () => {
               <DashboardNavLink
                 title={"Manage Users"}
                 icon={FaUsers}
-                location={"/dashboard/admin/users"}
+                location={"/dashboard/admin/all-users"}
+              />
+            </motion.li>
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"All Donation Requests"}
+                icon={BiSolidDonateBlood}
+                location={"/dashboard/admin/all-blood-donation-request"}
               />
             </motion.li>
             <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
@@ -270,17 +277,16 @@ const DashboardLayout = () => {
         animate="visible"
       >
         <div className="flex justify-between items-center px-6 py-4">
-          
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Logo />
-            </motion.div>
-            <span className="text-xl font-bold text-primary hidden md:inline">
-              Dashboard
-            </span>
-         
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Logo />
+          </motion.div>
+          <span className="text-xl font-bold text-primary hidden md:inline">
+            Dashboard
+          </span>
+
           <div className="flex items-center gap-4">
             <motion.div
               whileHover={{ scale: 1.05 }}
