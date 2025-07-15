@@ -17,6 +17,7 @@ import BlogDetails from "../pages/blogs/BlogDetails";
 import MyDonationReq from "../pages/dashboard/Donor/MyDonationReq";
 import AllUsersPage from "../pages/dashboard/Admin/AllUser";
 import AllBloodDonationRequests from "../pages/dashboard/Admin/AllBloodDonationRequests ";
+import ContentManage from "../pages/dashboard/common/ContentManage";
 
 export const router = createBrowserRouter([
   {
@@ -76,12 +77,16 @@ export const router = createBrowserRouter([
         Component: CreateDonationRequest,
       },
       {
-        path: "write-blog",
-        Component: CreateBlog,
-      },
-      {
         path: "my-donation-requests",
         Component: MyDonationReq,
+      },
+      {
+        path: "content-management",
+        Component: ContentManage,
+      },
+      {
+        path: "content-management/add-blog",
+        Component: CreateBlog,
       },
       {
         path: "profile",

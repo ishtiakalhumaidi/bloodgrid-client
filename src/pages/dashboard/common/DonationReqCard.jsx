@@ -13,11 +13,19 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { Link } from "react-router";
+import useRole from "../../../hooks/useRole";
+import useAuth from "../../../hooks/useAuth";
 
-const DonationReqCard = ({ req, setEditRequestId, handleDelete }) => {
+const DonationReqCard = ({
+  req,
+  setEditRequestId,
+  handleDelete,
+  updateStatus,
+}) => {
+  const { user } = useAuth();
+  const { role } = useRole();
   return (
     <>
-      {/* Card Header */}
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 border-b border-base-300">
         <div className="flex justify-between items-start mb-3">
           <div className="flex items-center gap-3">
@@ -100,7 +108,8 @@ const DonationReqCard = ({ req, setEditRequestId, handleDelete }) => {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-wrap gap-2 ">
+          <div className="flex flex-wrap gap-2 mt-4">
+            {/* Everyone can view */}
             <Link
               to={`/donation-request/${req._id}`}
               className="btn btn-sm btn-outline btn-primary"
@@ -108,20 +117,53 @@ const DonationReqCard = ({ req, setEditRequestId, handleDelete }) => {
             >
               <FaEye />
             </Link>
-            <button
-              onClick={() => setEditRequestId(req._id)}
-              className="btn btn-sm btn-info text-info-content"
-              title="Edit Request"
-            >
-              <FaEdit />
-            </button>
-            <button
-              onClick={() => handleDelete(req._id)}
-              className="btn btn-sm btn-error text-error-content"
-              title="Delete Request"
-            >
-              <FaTrash />
-            </button>
+
+            {/* Only donor (owner) and admin can edit/delete */}
+            {(role === "admin" || role === "donor") && (
+              <>
+                <button
+                  onClick={() => setEditRequestId(req._id)}
+                  className="btn btn-sm btn-info text-info-content"
+                  title="Edit Request"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  onClick={() => handleDelete(req._id)}
+                  className="btn btn-sm btn-error text-error-content"
+                  title="Delete Request"
+                >
+                  <FaTrash />
+                </button>
+              </>
+            )}
+
+            {/* Only volunteer or admin can update status */}
+            {req.status === "inprogress" &&
+              (role === "admin" ||
+                role === "volunteer" ||
+                (role === "donor" && req.requesterEmail === user.email)) && (
+                <>
+                  <button
+                    onClick={() =>
+                      updateStatus.mutate({ id: req._id, status: "done" })
+                    }
+                    className="btn btn-sm btn-success text-success-content"
+                    title="Mark as Done"
+                  >
+                    <FaCheck />
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateStatus.mutate({ id: req._id, status: "canceled" })
+                    }
+                    className="btn btn-sm btn-warning text-warning-content"
+                    title="Cancel Request"
+                  >
+                    <FaTimes />
+                  </button>
+                </>
+              )}
           </div>
         </div>
       </div>

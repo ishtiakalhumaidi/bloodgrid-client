@@ -119,6 +119,7 @@ const AllBloodDonationRequests = () => {
               req={req}
               setEditRequestId={setEditRequestId}
               handleDelete={handleDelete}
+              updateStatus={updateStatus}
             />
           </div>
         ))}

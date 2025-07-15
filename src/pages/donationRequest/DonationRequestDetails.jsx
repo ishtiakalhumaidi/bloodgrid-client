@@ -24,8 +24,10 @@ import { useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Loader from "../../components/common/Loader";
+import useRole from "../../hooks/useRole";
 
 const DonationRequestDetails = () => {
+  const { role } = useRole();
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
@@ -384,7 +386,14 @@ const DonationRequestDetails = () => {
                   </p>
                 </div>
 
-                {user.email === request.requesterEmail ? (
+                {role === "admin" ? (
+                  <button
+                    className="btn btn-disabled w-full btn-lg gap-2 text-gray-500 text-xs"
+                    disabled
+                  >
+                    Admins cannot donate blood
+                  </button>
+                ) : user.email === request.requesterEmail ? (
                   <button
                     className="btn btn-disabled w-full btn-lg gap-2 text-red-500 text-xs"
                     disabled
@@ -402,6 +411,7 @@ const DonationRequestDetails = () => {
                 )}
               </motion.div>
             )}
+
             {request.status === "inprogress" && (
               <motion.div
                 variants={itemVariants}
@@ -409,9 +419,7 @@ const DonationRequestDetails = () => {
               >
                 <div className="text-center mb-6">
                   <FaHeart className="text-4xl text-primary mx-auto mb-3" />
-                  <h3 className="text-xl font-bold text-info mb-2">
-                    Donor
-                  </h3>
+                  <h3 className="text-xl font-bold text-info mb-2">Donor</h3>
                   <p className="text-base-content/70">{request?.donor?.name}</p>
                   <a
                     href={`mailto:${request?.donor?.email}`}

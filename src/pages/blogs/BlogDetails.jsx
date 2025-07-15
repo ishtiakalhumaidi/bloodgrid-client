@@ -1,9 +1,11 @@
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { FaUser, FaClock, FaCalendarAlt, FaTag, FaEye } from "react-icons/fa";
+import { FaUser, FaClock, FaCalendarAlt, FaTag, FaEye, FaEdit } from "react-icons/fa";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../components/common/Loader";
+import DOMPurify from "dompurify";
+import { format } from "date-fns";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -58,6 +60,12 @@ const BlogDetails = () => {
     );
   }
 
+  const cleanContent = DOMPurify.sanitize(blog.content);
+  const getPlainText = (html) => {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = DOMPurify.sanitize(html);
+    return tmp.textContent || tmp.innerText || "";
+  };
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -157,18 +165,23 @@ const BlogDetails = () => {
           <div className="flex items-center gap-2 text-base-content/70">
             <FaCalendarAlt className="text-secondary" />
             <span className="font-medium">
-              {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {format(new Date(blog.createdAt), "MMMM d, yyyy, p")}
             </span>
           </div>
+          {blog.updatedAt && (
+            <div className="flex items-center gap-2 text-base-content/70">
+              <FaEdit className="text-secondary" />
+              <span className="font-medium">
+                {format(new Date(blog.updatedAt), "MMMM d, yyyy, p")} (edited)
+              </span>
+            </div>
+          )}
 
           <div className="flex items-center gap-2 text-base-content/70">
             <FaClock className="text-accent" />
             <span className="font-medium">
-              {Math.ceil(blog.content?.length / 1000) || 1} min read
+              {Math.ceil(getPlainText(blog.content)?.length / 1000) || 1} min
+              read
             </span>
           </div>
         </motion.div>
@@ -199,51 +212,7 @@ const BlogDetails = () => {
           className="prose prose-lg max-w-none text-base-content"
           variants={itemVariants}
         >
-          {blog.content?.split("\n").map((para, i) => {
-            if (para.trim() === "") return null;
-
-            // Check if it's a heading
-            if (para.startsWith("##")) {
-              return (
-                <motion.h2
-                  key={i}
-                  className="text-2xl md:text-3xl font-bold text-primary mt-8 mb-4 first:mt-0"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                >
-                  {para.replace("##", "").trim()}
-                </motion.h2>
-              );
-            }
-
-            if (para.startsWith("#")) {
-              return (
-                <motion.h1
-                  key={i}
-                  className="text-3xl md:text-4xl font-bold text-primary mt-8 mb-6 first:mt-0"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                >
-                  {para.replace("#", "").trim()}
-                </motion.h1>
-              );
-            }
-
-            // Regular paragraph
-            return (
-              <motion.p
-                key={i}
-                className="text-base-content/90 leading-relaxed text-lg mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-              >
-                {para}
-              </motion.p>
-            );
-          })}
+          <div dangerouslySetInnerHTML={{ __html: cleanContent }} />
         </motion.article>
       </motion.div>
 

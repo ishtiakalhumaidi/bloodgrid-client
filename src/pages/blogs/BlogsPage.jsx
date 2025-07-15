@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FaCalendarAlt, FaPenNib, FaUser } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import Loader from "../../components/common/Loader";
+import DOMPurify from "dompurify";
 
 const BlogsPage = () => {
   const axiosInstance = useAxios();
@@ -26,8 +27,12 @@ const BlogsPage = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center p-8 bg-base-100 rounded-xl shadow-lg border border-base-300">
           <div className="text-error text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-base-content mb-2">Oops! Something went wrong</h2>
-          <p className="text-base-content/70">Failed to load blogs. Please try again later.</p>
+          <h2 className="text-2xl font-bold text-base-content mb-2">
+            Oops! Something went wrong
+          </h2>
+          <p className="text-base-content/70">
+            Failed to load blogs. Please try again later.
+          </p>
         </div>
       </div>
     );
@@ -53,7 +58,8 @@ const BlogsPage = () => {
             Latest Blog <span className="text-primary">Posts</span>
           </h1>
           <p className="text-base-content/70 text-xl max-w-2xl mx-auto leading-relaxed">
-            Stay informed and inspired through our community stories & health tips.
+            Stay informed and inspired through our community stories & health
+            tips.
           </p>
         </motion.div>
 
@@ -76,7 +82,7 @@ const BlogsPage = () => {
                   className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-base-content/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
+
                 {/* Author Role Badge */}
                 <div className="absolute top-4 left-4">
                   <div
@@ -100,10 +106,12 @@ const BlogsPage = () => {
                 <h2 className="text-xl font-bold text-base-content line-clamp-2 group-hover:text-primary transition-colors duration-300">
                   {blog.title}
                 </h2>
-                
-                <p className="text-base-content/70 line-clamp-3 leading-relaxed">
-                  {blog.content?.slice(0, 150)}...
-                </p>
+
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(blog.content).slice(0, 150),
+                  }}
+                />
 
                 {/* Author and Date Info */}
                 <div className="flex items-center justify-between pt-4 border-t border-base-300">
@@ -121,7 +129,7 @@ const BlogsPage = () => {
                       {blog.authorName}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 text-sm text-base-content/60">
                     <FaCalendarAlt className="text-secondary" />
                     <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
@@ -148,11 +156,13 @@ const BlogsPage = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <Link
-            to="/dashboard/write-blog"
+            to="/dashboard/content-management/add-blog"
             className="group flex items-center gap-3 bg-secondary hover:bg-secondary/90 text-base-100 px-6 py-3 rounded-full shadow-2xl hover:shadow-secondary/30 transition-all duration-300 hover:scale-105"
           >
             <FaPenNib className="text-lg group-hover:rotate-12 transition-transform duration-300" />
-            <span className="font-semibold hidden md:block">Write Your Blog</span>
+            <span className="font-semibold hidden md:block">
+              Write Your Blog
+            </span>
           </Link>
         </motion.div>
       </div>

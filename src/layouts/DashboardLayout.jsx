@@ -26,6 +26,7 @@ import useCurrentDateTime from "../hooks/useCurrentDateTime";
 import { format } from "date-fns";
 import useRole from "../hooks/useRole";
 import useAuth from "../hooks/useAuth";
+import { MdManageAccounts } from "react-icons/md";
 
 const DashboardLayout = () => {
   const { user } = useAuth();
@@ -138,7 +139,7 @@ const DashboardLayout = () => {
             <DashboardNavLink
               title={"Write A Blog"}
               icon={TfiWrite}
-              location={"/dashboard/write-blog"}
+              location={"/dashboard/content-management/add-blog"}
             />
           </motion.li>
         </ul>
@@ -188,16 +189,16 @@ const DashboardLayout = () => {
           <ul className="space-y-2">
             <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
               <DashboardNavLink
-                title={"Create Request"}
-                icon={FaHandsHelping}
-                location={"/dashboard/volunteer/create-request"}
+                title={"All Donation Requests"}
+                icon={BiSolidDonateBlood}
+                location={"/dashboard/admin/all-blood-donation-request"}
               />
             </motion.li>
             <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
               <DashboardNavLink
-                title={"View Fundings"}
-                icon={FaDonate}
-                location={"/dashboard/volunteer/funds"}
+                title={"Content Management"}
+                icon={MdManageAccounts}
+                location={"/dashboard/content-management"}
               />
             </motion.li>
           </ul>
@@ -232,16 +233,9 @@ const DashboardLayout = () => {
             </motion.li>
             <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
               <DashboardNavLink
-                title={"Manage Blogs"}
+                title={"Content Management"}
                 icon={FaBlog}
-                location={"/dashboard/admin/blogs"}
-              />
-            </motion.li>
-            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
-              <DashboardNavLink
-                title={"Site Overview"}
-                icon={FaChartLine}
-                location={"/dashboard/admin/overview"}
+                location={"/dashboard/content-management"}
               />
             </motion.li>
           </ul>

@@ -4,7 +4,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
 
-const AdminDashboardHome = () => {
+const AdminVolunteerDashboardHome = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
@@ -153,4 +153,4 @@ const AdminDashboardHome = () => {
   );
 };
 
-export default AdminDashboardHome;
+export default AdminVolunteerDashboardHome;

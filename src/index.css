@@ -52,6 +52,7 @@
 }
 
 :root {
+  --jd-color-background-default: #5600ff;
   font-family: "Inter", sans-serif;
 }
 
@@ -62,7 +63,7 @@ h3 {
 }
 
 .btn:not(.btn-outline) {
-  @apply border-0 ;
+  @apply border-0;
 }
 .btn,
 .btn-outline {
