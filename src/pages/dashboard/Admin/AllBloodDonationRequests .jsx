@@ -63,7 +63,11 @@ const AllBloodDonationRequests = () => {
     },
     onSuccess: (_, { status }) => {
       Swal.fire("Updated!", `Marked as ${status}.`, "success");
-      queryClient.invalidateQueries(["myDonationRequests"]);
+      queryClient.invalidateQueries([
+        "myDonationRequests",
+        "dashboardStats",
+        "donationRequestStats",
+      ]);
     },
   });
 

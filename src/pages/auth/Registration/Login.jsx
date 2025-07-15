@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import {
   FaEnvelope,
@@ -10,6 +10,8 @@ import {
   FaGithub,
   FaGoogle,
   FaFacebook,
+  FaEyeSlash,
+  FaEye,
 } from "react-icons/fa";
 import sideImg from "../../../assets/images/authentication.svg";
 import useAuth from "../../../hooks/useAuth";
@@ -20,7 +22,11 @@ import { useMutation } from "@tanstack/react-query";
 
 const Login = () => {
   const { loginUser } = useAuth();
+  const location = useLocation();
+  const toRedirect = location.state?.from || "/";
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const axiosSecure = useAxiosSecure();
 
   const { mutate: updateLastLogin } = useMutation({
@@ -40,7 +46,7 @@ const Login = () => {
     try {
       const res = await loginUser(data.email, data.password);
       if (res.user) {
-        updateLastLogin(res.user.email);
+        updateLastLogin(res.user?.email);
         Swal.fire({
           position: "center",
           icon: "success",
@@ -57,6 +63,7 @@ const Login = () => {
             htmlContainer: "text-sm",
           },
         });
+        navigate(toRedirect);
       }
     } catch (err) {
       Swal.fire({
@@ -146,7 +153,7 @@ const Login = () => {
                   </div>
 
                   {/* Password Field */}
-                  <div className="form-control">
+                  <div className="form-control relative">
                     <label className="label">
                       <span className="label-text font-medium flex items-center gap-2">
                         <FaLock className="text-primary" />
@@ -161,7 +168,7 @@ const Login = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type="password"
+                        type={showPass ? "text" : "password"}
                         {...register("password", {
                           required: "Password is required",
                         })}
@@ -180,6 +187,17 @@ const Login = () => {
                           {errors.password.message}
                         </span>
                       </label>
+                    )}
+                    {showPass ? (
+                      <FaEyeSlash
+                        onClick={() => setShowPass(!showPass)}
+                        className="text-secondary text-lg absolute right-2 top-8"
+                      />
+                    ) : (
+                      <FaEye
+                        onClick={() => setShowPass(!showPass)}
+                        className="text-secondary absolute text-lg right-2 top-8"
+                      />
                     )}
                   </div>
 
@@ -217,6 +235,7 @@ const Login = () => {
                 <p className="text-center text-sm text-base-content/60 ">
                   Don't have an account?{" "}
                   <Link
+                    state={{ from: toRedirect }}
                     to="/auth/register"
                     className="text-primary hover:underline font-medium"
                   >

@@ -11,10 +11,15 @@ import {
   FaCalendarAlt,
   FaClock,
   FaEnvelope,
+  FaHourglassStart,
 } from "react-icons/fa";
 import { Link } from "react-router";
 import useRole from "../../../hooks/useRole";
 import useAuth from "../../../hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
+import { FaBarsProgress } from "react-icons/fa6";
 
 const DonationReqCard = ({
   req,
@@ -24,6 +29,34 @@ const DonationReqCard = ({
 }) => {
   const { user } = useAuth();
   const { role } = useRole();
+  const queryClient = useQueryClient();
+  const axiosSecure = useAxiosSecure();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return axiosSecure.patch(`/donation-requests/${req._id}/donate`, {
+        status: "inprogress",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["donation-request", req._id]);
+      Swal.fire({
+        icon: "success",
+        title: "Thank you!",
+        text: "Your interest to donate has been recorded.",
+        background: "#fff",
+        color: "#333",
+      });
+    },
+    onError: () => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong. Please try again later.",
+        background: "#fff",
+        color: "#333",
+      });
+    },
+  });
   return (
     <>
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 border-b border-base-300">
@@ -138,11 +171,25 @@ const DonationReqCard = ({
               </>
             )}
 
+            {/* only admin or volunteer can update status inprogress */}
+            {req.status === "pending" && req.donor && role !== "donor" && (
+              <button
+                onClick={() =>
+                  mutation.mutate({ id: req._id, status: "inprogress" })
+                }
+                className="btn btn-sm btn-warning text-white flex items-center gap-2"
+                disabled={mutation.isPending}
+              >
+                <FaHourglassStart />
+                Set In Progress
+              </button>
+            )}
+
             {/* Only volunteer or admin can update status */}
             {req.status === "inprogress" &&
               (role === "admin" ||
                 role === "volunteer" ||
-                (role === "donor" && req.requesterEmail === user.email)) && (
+                (role === "donor" && req.requesterEmail === user?.email)) && (
                 <>
                   <button
                     onClick={() =>

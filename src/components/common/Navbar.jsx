@@ -120,7 +120,11 @@ const Navbar = () => {
                   role="button"
                   className="btn btn-ghost btn-circle avatar"
                 >
-                  <div className="w-10 rounded-full border">
+                  <div
+                    className="w-10 rounded-full border"
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content={user?.displayName}
+                  >
                     {user?.photoURL ? (
                       <img
                         className="object-cover w-full h-full"

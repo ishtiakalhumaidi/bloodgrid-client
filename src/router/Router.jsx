@@ -21,15 +21,27 @@ import ContentManage from "../pages/dashboard/common/ContentManage";
 import Fundraiser from "../pages/Fund/Fundraiser";
 import FundraiserPayments from "../pages/dashboard/common/FundraiserPayments";
 import AboutUs from "../pages/AboutUs";
+import Forbidden from "../pages/Forbidden";
+import PrivateRoute from "../routes/PrivateRoute";
+import AdminRoute from "../routes/AdminRoute";
+import AdminVolunteerDashboardHome from "../pages/dashboard/common/AdminVolunteerDashboardHome";
+import AdminVolunteerRoute from "../routes/AdminVolunteerRoute";
+import DonorRoute from "../routes/DonorRoute";
+import ErrorPage from "../pages/Error/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: MainLayout,
+    errorElement:<ErrorPage/>,
     children: [
       {
         index: true,
         Component: Home,
+      },
+      {
+        path: "/forbidden",
+        Component: Forbidden,
       },
       {
         path: "search-donor",
@@ -41,7 +53,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "donation-request/:id",
-        Component: DonationRequestDetails,
+
+        element: (
+          <PrivateRoute>
+            <DonationRequestDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "blogs",
@@ -53,7 +70,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "fundraiser",
-        Component: Fundraiser,
+        element: (
+          <PrivateRoute>
+            <Fundraiser />
+          </PrivateRoute>
+        ),
       },
       {
         path: "about",
@@ -77,7 +98,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
@@ -85,15 +110,27 @@ export const router = createBrowserRouter([
       },
       {
         path: "create-donation-request",
-        Component: CreateDonationRequest,
+        element: (
+          <DonorRoute>
+            <CreateDonationRequest />
+          </DonorRoute>
+        ),
       },
       {
         path: "my-donation-requests",
-        Component: MyDonationReq,
+        element: (
+          <DonorRoute>
+            <MyDonationReq />
+          </DonorRoute>
+        ),
       },
       {
         path: "content-management",
-        Component: ContentManage,
+        element: (
+          <AdminVolunteerRoute>
+            <ContentManage />
+          </AdminVolunteerRoute>
+        ),
       },
       {
         path: "content-management/add-blog",
@@ -106,14 +143,27 @@ export const router = createBrowserRouter([
       {
         path: "fund-records",
         Component: FundraiserPayments,
+        element: (
+          <AdminRoute>
+            <FundraiserPayments />
+          </AdminRoute>
+        ),
       },
       {
         path: "admin/all-blood-donation-request",
-        Component: AllBloodDonationRequests,
+        element: (
+          <AdminVolunteerRoute>
+            <AllBloodDonationRequests />
+          </AdminVolunteerRoute>
+        ),
       },
       {
         path: "admin/all-users",
-        Component: AllUsersPage,
+        element: (
+          <AdminRoute>
+            <AllUsersPage />
+          </AdminRoute>
+        ),
       },
     ],
   },

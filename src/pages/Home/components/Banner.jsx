@@ -2,16 +2,18 @@ import React from "react";
 import { Link } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
+import bannerImg from "../../../assets/images/banner.png";
 
 const Banner = () => {
   const { user } = useAuth();
-  const role = useRole();
+  const { role } = useRole();
   return (
     <section className="relative min-h-[93vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-bottom  -z-10"
+        className="absolute inset-0 bg-cover bg-right   -z-10"
         style={{ backgroundImage: "url('/BannerBG.svg')" }}
       ></div>
+      <img className="max-w-50" src={bannerImg} alt="" />
       <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
         Be the <span className="text-primary">Lifeline</span> Someone's Waiting
         For.
@@ -21,10 +23,19 @@ const Banner = () => {
         a few clicks.
       </p>
       <div className="flex flex-col md:flex-row gap-4">
-        {!user && (
-          <Link to={"/auth/register"} className="btn btn-primary px-6">
-            Join as a Donor
+        {user && role == "donor" ? (
+          <Link
+            to={"/dashboard/create-donation-request"}
+            className="btn btn-primary px-6"
+          >
+            Create Donation Request
           </Link>
+        ) : (
+          !user && (
+            <Link to={"/auth/register"} className="btn btn-primary px-6">
+              Join as a Donor
+            </Link>
+          )
         )}
 
         <Link to={"/search-donor"} className="btn btn-outline px-6">

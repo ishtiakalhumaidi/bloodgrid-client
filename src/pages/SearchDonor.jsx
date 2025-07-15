@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import axios from "axios";
 import {
   FaSearch,
@@ -8,8 +9,13 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import Loader from "../components/common/Loader";
+import searchImg from "../assets/images/search.svg";
+import { BiSearchAlt2 } from "react-icons/bi";
+import useAxios from "../hooks/useAxios";
+import DonorPDFDocument from "../components/pdf/DonorPDFDocument";
 
 const SearchDonor = () => {
+  const axiosInstance = useAxios();
   const [bloodGroup, setBloodGroup] = useState("");
   const [district, setDistrict] = useState("");
   const [upazila, setUpazila] = useState("");
@@ -23,7 +29,10 @@ const SearchDonor = () => {
   }, []);
 
   useEffect(() => {
-    if (!district) return;
+    if (!district) {
+      setUpazilas([]); // Clear upazilas when district is cleared
+      return;
+    }
     axios.get("/upazilas.json").then((res) => {
       const filtered = res.data.filter(
         (u) => String(u.district_id) === String(district)
@@ -35,18 +44,17 @@ const SearchDonor = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     setIsSearching(true);
+    setResults([]); // Clear previous results
     const selectedDis = districts.find((dis) => dis.id == district);
 
     try {
-      const res = await axios.get("http://localhost:5000/donors", {
+      const res = await axiosInstance.get("/donors", {
         params: {
           bloodGroup,
           district: selectedDis.name,
           upazila,
         },
       });
-
-      console.log(res.data);
       setResults(res.data);
     } catch (err) {
       console.error("Error fetching donors:", err);
@@ -57,13 +65,21 @@ const SearchDonor = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center text-primary mb-8">
-        🔍 Search Blood Donors
-      </h2>
+      <div className="flex text-center flex-col md:flex-row items-center justify-center text-4xl  md:text-5xl gap-2">
+        <BiSearchAlt2 className="text-primary" />
+        <h2 className=" font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+          Search Blood Donors
+        </h2>
+      </div>
+      <img
+        className="max-w-xs mx-auto"
+        src={searchImg}
+        alt="Search illustration"
+      />
 
       <form
         onSubmit={handleSearch}
-        className="bg-base-100 p-6 md:p-8 rounded-2xl shadow-xl border border-base-300 space-y-6"
+        className="bg-base-100 p-6 md:p-8 rounded-2xl shadow-xl border border-base-300 space-y-6 mt-6"
       >
         <div className="grid md:grid-cols-3 gap-4">
           {/* Blood Group */}
@@ -96,7 +112,7 @@ const SearchDonor = () => {
               value={district}
               onChange={(e) => {
                 setDistrict(e.target.value);
-                setUpazila("");
+                setUpazila(""); // Reset upazila when district changes
               }}
               required
             >
@@ -132,7 +148,7 @@ const SearchDonor = () => {
         </div>
 
         <div className="text-center">
-          <button className="btn btn-primary btn-wide gap-2">
+          <button type="submit" className="btn btn-primary btn-wide gap-2">
             <FaSearch /> Search Donors
           </button>
         </div>
@@ -144,12 +160,29 @@ const SearchDonor = () => {
           <Loader />
         ) : results.length > 0 ? (
           <>
-            <h3 className="text-xl font-semibold text-base-content mb-4">
-              <FaCircle className="inline text-green-500" /> Found{" "}
-              {results.length} donor
-              {results.length > 1 && "s"}
-            </h3>
-            <div className="overflow-x-auto rounded-xl border border-base-300 shadow-sm">
+            <div className="flex flex-row-reverse justify-between">
+              <PDFDownloadLink
+                document={<DonorPDFDocument donors={results} />}
+                fileName={`donor-results-${Date.now()}-by_BloodGrid.pdf`}
+                className="btn btn-sm btn-secondary"
+              >
+                {({ loading }) =>
+                  loading ? "Preparing PDF..." : "Download PDF"
+                }
+              </PDFDownloadLink>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-semibold text-base-content">
+                  <FaCircle className="inline text-green-500 text-xs mr-2" />{" "}
+                  Found {results.length} donor{results.length > 1 && "s"}
+                </h3>
+              </div>
+            </div>
+
+            {/* --- Ref is attached to the content wrapper --- */}
+            <div
+              id="invoice"
+              className="overflow-x-auto rounded-xl border border-base-300 shadow-sm"
+            >
               <table className="table table-zebra w-full text-sm">
                 <thead className="bg-base-200 text-base font-medium">
                   <tr>
@@ -190,7 +223,7 @@ const SearchDonor = () => {
           </>
         ) : (
           <p className="text-center text-gray-500 mt-8">
-            No donors found yet. Try adjusting your search criteria.
+            No donors found yet. Use the form to search for available donors.
           </p>
         )}
       </div>

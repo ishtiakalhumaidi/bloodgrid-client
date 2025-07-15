@@ -18,9 +18,11 @@ import {
   FaCommentMedical,
   FaHandHoldingHeart,
 } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 const CreateDonationRequest = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -69,7 +71,7 @@ const CreateDonationRequest = () => {
   const { data: userInfo, isLoading } = useQuery({
     queryKey: [user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/user?email=${user.email}`);
+      const res = await axiosSecure.get(`/user?email=${user?.email}`);
       return res.data;
     },
   });
@@ -95,7 +97,7 @@ const CreateDonationRequest = () => {
       ...data,
       recipientDistrict: selectedDistrictData.name,
       requesterName: user.displayName,
-      requesterEmail: user.email,
+      requesterEmail: user?.email,
     };
 
     try {
@@ -114,6 +116,7 @@ const CreateDonationRequest = () => {
         reset();
         setSelectedDistrict("");
         setUpazilas([]);
+        navigate("/dashboard/my-donation-requests");
       }
     } catch (error) {
       Swal.fire({
@@ -220,7 +223,7 @@ const CreateDonationRequest = () => {
                 <InputWrapper icon={FaEnvelope} label="Email">
                   <input
                     type="email"
-                    value={user.email}
+                    value={user?.email}
                     readOnly
                     className="input input-bordered w-full bg-base-300/50 cursor-not-allowed"
                   />

@@ -70,7 +70,7 @@ const AllUsersPage = () => {
   const filteredUsers = users.filter(
     (user) =>
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      user?.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusColor = (status) => {
@@ -227,7 +227,7 @@ const AllUsersPage = () => {
                     {/* Contact */}
                     <td>
                       <div className="text-sm">
-                        <div className="text-base-content">{user.email}</div>
+                        <div className="text-base-content">{user?.email}</div>
                         <div className="text-base-content/70">
                           {user.phone || "No phone"}
                         </div>

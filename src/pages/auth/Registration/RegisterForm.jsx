@@ -10,10 +10,12 @@ import {
   FaUpload,
   FaClock,
   FaCheckCircle,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 
 import sideImg from "../../../assets/images/RegisterSide.svg";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import axios from "axios";
 import { imageUpload } from "../../../api/imageUpload";
 import useAuth from "../../../hooks/useAuth";
@@ -28,7 +30,11 @@ const RegisterForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [districts, setDistricts] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const axiosInstance = useAxios();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const toRedirect = location.state?.from || "/";
 
   const [uploadedImageError, setUploadedImageError] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -127,6 +133,7 @@ const RegisterForm = () => {
                   timer: 1800,
                 });
                 reset();
+                navigate(toRedirect);
               }
             } catch (err) {
               console.log(err);
@@ -420,7 +427,7 @@ const RegisterForm = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Password Field */}
-                  <div className="form-control">
+                  <div className="form-control relative">
                     <label className="label">
                       <span className="label-text flex items-center gap-2 font-medium">
                         <FaLock className="text-primary" /> Password
@@ -428,12 +435,18 @@ const RegisterForm = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type="password"
+                        type={showPass ? "text" : "password"}
                         {...register("password", {
                           required: "Password is required",
                           minLength: {
                             value: 6,
                             message: "Password must be at least 6 characters",
+                          },
+                          pattern: {
+                            value:
+                              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/,
+                            message:
+                              "Must include uppercase, lowercase & special character",
                           },
                         })}
                         className={`input input-bordered w-full pl-10 ${
@@ -447,10 +460,22 @@ const RegisterForm = () => {
                     </div>
                     {errors.password && (
                       <label className="label">
-                        <span className="label-text-alt text-error">
+                        <p className="label-text-alt text-error whitespace-normal break-words leading-snug">
                           {errors.password.message}
-                        </span>
+                        </p>
                       </label>
+                    )}
+
+                    {showPass ? (
+                      <FaEyeSlash
+                        onClick={() => setShowPass(!showPass)}
+                        className="text-secondary text-lg absolute right-2 top-8"
+                      />
+                    ) : (
+                      <FaEye
+                        onClick={() => setShowPass(!showPass)}
+                        className="text-secondary absolute text-lg right-2 top-8"
+                      />
                     )}
                   </div>
 
@@ -525,6 +550,7 @@ const RegisterForm = () => {
               <p className="text-center text-sm text-base-content/60 ">
                 Already have an account?{" "}
                 <Link
+                  state={{ from: toRedirect }}
                   to={"/auth/login"}
                   className="text-primary hover:underline"
                 >

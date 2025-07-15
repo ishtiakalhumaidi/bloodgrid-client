@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import {
   FaEdit,
@@ -26,6 +26,7 @@ import EditDonationRequest from "./EditDonationRequest";
 
 const DonorDashboardHome = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [editRequest, setEditRequest] = useState(null);
@@ -39,7 +40,7 @@ const DonorDashboardHome = () => {
     queryKey: ["dashboardRecentDonations", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/my-donation-requests/user?email=${user.email}&page=1&limit=3`
+        `/my-donation-requests/user?email=${user?.email}&page=1&limit=3`
       );
       return res.data;
     },
@@ -86,10 +87,24 @@ const DonorDashboardHome = () => {
     }
   };
 
-  const handleStatusUpdate = async (id, status) => {
-    await axiosSecure.patch(`/donation-requests/${id}`, { status });
-    refetch();
-    Swal.fire("Updated!", `Donation marked as ${status}.`, "success");
+  const { mutate: updateStatus } = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const res = await axiosSecure.patch(`/donation-requests/${id}`, {
+        status,
+      });
+      return res.data;
+    },
+    onSuccess: (_, { status }) => {
+      queryClient.invalidateQueries(["dashboardStats", "donationRequestStats"]);
+      Swal.fire("Updated!", `Donation marked as ${status}.`, "success");
+    },
+    onError: () => {
+      Swal.fire("Error!", "Failed to update donation status.", "error");
+    },
+  });
+
+  const handleStatusUpdate = (id, status) => {
+    updateStatus({ id, status });
   };
 
   const requests = donationData?.requests || [];

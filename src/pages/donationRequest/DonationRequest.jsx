@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -45,10 +45,6 @@ const DonationRequest = () => {
     },
   });
 
-  const handleView = (id) => {
-    if (!user) return navigate("/login");
-    navigate(`/donation-request/${id}`);
-  };
   if (isLoading)
     return (
       <div className="h-96 flex justify-center items-center">
@@ -136,20 +132,20 @@ const DonationRequest = () => {
                 </div>
 
                 <div className="flex items-center gap-2 mb-3 text-base-content/80">
-                  <FaMapMarkerAlt className="text-green-500 text-sm" />
+                  <FaMapMarkerAlt className="text-primary text-sm" />
                   <span className="text-sm">
                     {request.recipientUpazila}, {request.recipientDistrict}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 mb-3 text-base-content/80">
-                  <FaHospital className="text-blue-500 text-sm" />
+                  <FaHospital className=" text-sm" />
                   <span className="text-sm">{request.hospitalName}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="flex items-center gap-2 text-base-content/80">
-                    <FaCalendarAlt className="text-purple-500 text-sm" />
+                    <FaCalendarAlt className=" text-sm" />
                     <span className="text-sm">{request.donationDate}</span>
                   </div>
                   <div className="flex items-center gap-2 text-base-content/80">
@@ -164,13 +160,13 @@ const DonationRequest = () => {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => handleView(request._id)}
+                <Link
+                  to={`/donation-request/${request._id}`}
                   className="btn btn-primary w-full group-hover:btn-secondary transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <span>View Details</span>
                   <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
-                </button>
+                </Link>
               </div>
 
               <div className="h-1 bg-gradient-to-r from-red-500 to-pink-500"></div>
