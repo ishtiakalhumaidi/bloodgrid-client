@@ -86,11 +86,14 @@ const EditDonationRequest = ({ requestId, onClose }) => {
       });
 
       setValue("recipientDistrict", matchedDistrictId);
-
-      setValue("recipientUpazila", request.recipientUpazila);
     }
   }, [request, districts, reset, setValue]);
 
+  useEffect(() => {
+    if (request && upazilas.length) {
+      setValue("recipientUpazila", request.recipientUpazila);
+    }
+  }, [request, upazilas, setValue]);
   // Filter upazilas based on selected district
   const filteredUpazilas = upazilas.filter(
     (u) => String(u.district_id) === String(selectedDistrict)

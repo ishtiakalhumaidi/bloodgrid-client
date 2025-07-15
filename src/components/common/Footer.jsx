@@ -48,7 +48,7 @@ const Footer = () => {
           viewport={{ once: true }}
           className="max-w-7xl mx-auto"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {/* Logo & About */}
             <motion.div variants={itemVariants} className="space-y-4">
               <Logo />
@@ -84,12 +84,11 @@ const Footer = () => {
               <h4 className="text-lg font-semibold">Quick Links</h4>
               <ul className="space-y-3">
                 {[
-                  { to: "/search", text: "Search Donors" },
+                  { to: "/search-donor", text: "Search Donors" },
                   { to: "/donation-requests", text: "Donation Requests" },
-                  { to: "/emergency", text: "Emergency Contact" },
+
                   { to: "/blogs", text: "Blood Donation Blog" },
                   { to: "/about", text: "About Us" },
-                  { to: "/contact", text: "Contact Us" },
                 ].map((link, index) => (
                   <li key={index}>
                     <Link
@@ -99,31 +98,6 @@ const Footer = () => {
                       <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
                       {link.text}
                     </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Services */}
-            <motion.div variants={itemVariants} className="space-y-4">
-              <h4 className="text-lg font-semibold">Our Services</h4>
-              <ul className="space-y-3">
-                {[
-                  "Blood Donation",
-                  "Donor Registration",
-                  "Blood Request",
-                  "Emergency Support",
-                  "Medical Consultation",
-                  "Volunteer Program",
-                ].map((service, index) => (
-                  <li key={index}>
-                    <a
-                      href="#"
-                      className="text-base-content/70 hover:text-primary transition-colors duration-300 flex items-center gap-2"
-                    >
-                      <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                      {service}
-                    </a>
                   </li>
                 ))}
               </ul>

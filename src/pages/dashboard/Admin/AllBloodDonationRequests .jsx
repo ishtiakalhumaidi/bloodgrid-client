@@ -20,6 +20,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
 import EditDonationRequest from "../Donor/EditDonationRequest";
 import DonationReqCard from "../common/DonationReqCard";
+import { BiSolidDonateBlood } from "react-icons/bi";
 
 const statuses = ["all", "pending", "inprogress", "done", "canceled"];
 const limit = 5;
@@ -109,21 +110,32 @@ const AllBloodDonationRequests = () => {
       </div>
 
       {/* Requests list */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {requests.map((req) => (
-          <div
-            key={req._id}
-            className="bg-base-100 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-base-300 overflow-hidden"
-          >
-            <DonationReqCard
-              req={req}
-              setEditRequestId={setEditRequestId}
-              handleDelete={handleDelete}
-              updateStatus={updateStatus}
-            />
+      {requests.length === 0 ? (
+        <div className="col-span-full">
+          <div className="bg-base-100 rounded-xl shadow-lg p-12 text-center border border-base-300">
+            <BiSolidDonateBlood className="text-6xl text-base-content/30 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-base-content mb-2">
+              No blood donation requests found.
+            </h3>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+          {requests.map((req) => (
+            <div
+              key={req._id}
+              className="bg-base-100 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-base-300 overflow-hidden"
+            >
+              <DonationReqCard
+                req={req}
+                setEditRequestId={setEditRequestId}
+                handleDelete={handleDelete}
+                updateStatus={updateStatus}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editRequestId && (

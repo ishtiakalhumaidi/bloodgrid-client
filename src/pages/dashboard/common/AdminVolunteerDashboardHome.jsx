@@ -1,12 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { FaUsers, FaTint, FaHandHoldingUsd, FaUserShield } from "react-icons/fa";
+import {
+  FaUsers,
+  FaTint,
+  FaHandHoldingUsd,
+  FaUserShield,
+  FaBlog,
+} from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
+import { Link } from "react-router";
+import useRole from "../../../hooks/useRole";
 
 const AdminVolunteerDashboardHome = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const { role } = useRole();
 
   const { data: stats, isLoading } = useQuery({
     queryKey: ["dashboardStats"],
@@ -29,7 +38,7 @@ const AdminVolunteerDashboardHome = () => {
       bgColor: "bg-primary",
     },
     {
-      title: "Total Donations",
+      title: "Total Donations Request",
       icon: <FaTint className="text-3xl" />,
       value: totalDonationRequests || 0,
       color: "bg-secondary/10 text-secondary",
@@ -39,7 +48,7 @@ const AdminVolunteerDashboardHome = () => {
       title: "Total Funds",
       icon: <FaHandHoldingUsd className="text-3xl" />,
       value: `$${(totalFunds || 0).toLocaleString()}`,
-      color: "bg-accent/10 text-accent",
+      color: "bg-accent/10 text-primary",
       bgColor: "bg-accent",
     },
   ];
@@ -53,9 +62,9 @@ const AdminVolunteerDashboardHome = () => {
             <div className="avatar">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
                 {user?.photoURL ? (
-                  <img 
-                    src={user.photoURL} 
-                    alt="Admin" 
+                  <img
+                    src={user.photoURL}
+                    alt="Admin"
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (
@@ -65,17 +74,15 @@ const AdminVolunteerDashboardHome = () => {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-base-content">
-                Welcome back, {user?.displayName || 'Admin'}!
+                Welcome back, {user?.displayName || "Admin"}!
               </h1>
               <p className="text-base-content/70 text-lg">
-                Manage your blood donation platform
+                {role == "admin"
+                  ? "Manage your blood donation platform"
+                  : "Manage your volunteer tasks and help connect donors in need"}
               </p>
             </div>
           </div>
-          
-          
-          
-         
         </div>
       </div>
 
@@ -99,56 +106,78 @@ const AdminVolunteerDashboardHome = () => {
                       </h3>
                     </div>
                   </div>
-                  
+
                   <div className="text-3xl font-bold text-base-content mb-2">
                     {card.value}
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${card.bgColor}`}></div>
+                    <div
+                      className={`w-2 h-2 rounded-full ${card.bgColor}`}
+                    ></div>
                     <span className="text-sm text-base-content/70">
                       Updated recently
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="hidden md:block">
-                  <div className={`w-16 h-16 rounded-full ${card.color} flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity`}>
+                  <div
+                    className={`w-16 h-16 rounded-full ${card.color} flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity`}
+                  >
                     {card.icon}
                   </div>
                 </div>
               </div>
             </div>
-            
-            <div className={`h-1 ${card.bgColor} group-hover:h-2 transition-all duration-300`}></div>
+
+            <div
+              className={`h-1 ${card.bgColor} group-hover:h-2 transition-all duration-300`}
+            ></div>
           </div>
         ))}
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-8">
-        <div className="bg-base-100 rounded-xl shadow-lg p-6 border border-base-300">
-          <h2 className="text-xl font-bold text-base-content mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <button className="btn btn-outline btn-primary">
-              <FaUsers className="mr-2" />
-              Manage Users
-            </button>
-            <button className="btn btn-outline btn-secondary">
-              <FaTint className="mr-2" />
-              View Requests
-            </button>
-            <button className="btn btn-outline btn-accent">
-              <FaHandHoldingUsd className="mr-2" />
-              Fund Management
-            </button>
-            <button className="btn btn-outline">
-              <FaUserShield className="mr-2" />
-              Admin Settings
-            </button>
+      {role === "admin" && (
+        <div className="mt-8">
+          <div className="bg-base-100 rounded-xl shadow-lg p-6 border border-base-300">
+            <h2 className="text-xl font-bold text-base-content mb-4">
+              Quick Actions
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Link
+                to={"/dashboard/admin/all-users"}
+                className="btn btn-outline btn-primary"
+              >
+                <FaUsers className="mr-2" />
+                Manage Users
+              </Link>
+              <Link
+                to={"/admin/all-blood-donation-request"}
+                className="btn btn-outline btn-secondary"
+              >
+                <FaTint className="mr-2" />
+                View Requests
+              </Link>
+              <Link
+                to={"/dashboard/fund-records"}
+                className="btn btn-outline btn-primary"
+              >
+                <FaHandHoldingUsd className="mr-2" />
+                Fund Records
+              </Link>
+              <Link
+                to={"/dashboard/content-management"}
+                className="btn btn-outline"
+              >
+                <FaBlog className="mr-2" />
+                Content Manage
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

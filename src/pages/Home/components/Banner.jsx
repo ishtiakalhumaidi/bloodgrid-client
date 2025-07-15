@@ -21,17 +21,12 @@ const Banner = () => {
         a few clicks.
       </p>
       <div className="flex flex-col md:flex-row gap-4">
-        {user ? (
-          role.role !== "volunteer" && (
-            <Link to={"/"} className="btn btn-primary px-6">
-              Become a Volunteer
-            </Link>
-          )
-        ) : (
+        {!user && (
           <Link to={"/auth/register"} className="btn btn-primary px-6">
             Join as a Donor
           </Link>
         )}
+
         <Link to={"/search-donor"} className="btn btn-outline px-6">
           Search Donors
         </Link>

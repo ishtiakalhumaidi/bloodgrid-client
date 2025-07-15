@@ -15,10 +15,19 @@ import sideImg from "../../../assets/images/authentication.svg";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { errorCap } from "../../../utils/errorMessageCap";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useMutation } from "@tanstack/react-query";
 
 const Login = () => {
   const { loginUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const axiosSecure = useAxiosSecure();
+
+  const { mutate: updateLastLogin } = useMutation({
+    mutationFn: async (email) => {
+      return await axiosSecure.patch(`/users/${email}/last-login`);
+    },
+  });
 
   const {
     register,
@@ -31,6 +40,7 @@ const Login = () => {
     try {
       const res = await loginUser(data.email, data.password);
       if (res.user) {
+        updateLastLogin(res.user.email);
         Swal.fire({
           position: "center",
           icon: "success",

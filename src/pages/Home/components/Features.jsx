@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 
 const Features = () => {
   return (
@@ -75,7 +76,11 @@ const Features = () => {
           <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
             <div className="card-body p-8">
               <div className="text-4xl mb-4 flex justify-center text-primary group-hover:scale-110 transition-transform duration-300">
-               <img className="w-24 " src="https://www.svgrepo.com/show/284854/secure-shield-shield.svg" alt="Secure" />
+                <img
+                  className="w-24 "
+                  src="https://www.svgrepo.com/show/284854/secure-shield-shield.svg"
+                  alt="Secure"
+                />
               </div>
               <h3 className="text-xl font-bold mb-3">Secure Workflow</h3>
               <p className="text-base-content/70">
@@ -94,7 +99,11 @@ const Features = () => {
           <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
             <div className="card-body p-8">
               <div className="text-4xl mb-4 flex justify-center text-primary group-hover:scale-110 transition-transform duration-300">
-                 <img className="w-24 " src="https://www.svgrepo.com/show/251164/love-like.svg" alt="Community" />
+                <img
+                  className="w-24 "
+                  src="https://www.svgrepo.com/show/251164/love-like.svg"
+                  alt="Community"
+                />
               </div>
               <h3 className="text-xl font-bold mb-3">Community Funding</h3>
               <p className="text-base-content/70">
@@ -110,11 +119,13 @@ const Features = () => {
           </div>
         </div>
 
-        {/* Added CTA Section */}
         <div className="mt-16">
-          <button className="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-all duration-300">
+          <Link
+            to={"/donation-requests"}
+            className="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          >
             Start Saving Lives Today
-          </button>
+          </Link>
           <p className="mt-4 text-sm text-base-content/60">
             Join thousands of donors making a difference every day
           </p>

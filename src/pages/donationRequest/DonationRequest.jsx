@@ -13,6 +13,7 @@ import React from "react";
 import Loader from "../../components/common/Loader";
 import useAxios from "../../hooks/useAxios";
 import useAuth from "../../hooks/useAuth";
+import { BiSolidDonateBlood } from "react-icons/bi";
 
 const containerVariants = {
   hidden: {},
@@ -93,79 +94,90 @@ const DonationRequest = () => {
       </motion.div>
 
       {/* Requests Grid */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {requests.map((request) => (
-          <motion.div
-            key={request._id}
-            variants={itemVariants}
-            className="bg-base-200  rounded-2xl shadow-lg border border-b-0 overflow-hidden hover:shadow-xl transition-all duration-300 group"
-            whileHover={{ y: -5 }}
-          >
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-base-content mb-1">
-                    {request.recipientName}
-                  </h3>
-                  <p className="text-sm text-base-content/70">
-                    Requested by {request.requesterName}
-                  </p>
+      {requests.length === 0 ? (
+        <div className="col-span-full">
+          <div className="bg-base-100 rounded-xl shadow-lg p-12 text-center border border-base-300">
+            <BiSolidDonateBlood className="text-6xl text-base-content/30 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-base-content mb-2">
+              No blood donation requests found.
+            </h3>
+          </div>
+        </div>
+      ) : (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {requests.map((request) => (
+            <motion.div
+              key={request._id}
+              variants={itemVariants}
+              className="bg-base-200  rounded-2xl shadow-lg border border-b-0 overflow-hidden hover:shadow-xl transition-all duration-300 group"
+              whileHover={{ y: -5 }}
+            >
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-base-content mb-1">
+                      {request.recipientName}
+                    </h3>
+                    <p className="text-sm text-base-content/70">
+                      Requested by {request.requesterName}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1 bg-base-300  rounded-full">
+                    <FaTint className="text-red-600 text-sm" />
+                    <span className="font-bold text-red-600 ">
+                      {request.bloodGroup}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 bg-base-300  rounded-full">
-                  <FaTint className="text-red-600 text-sm" />
-                  <span className="font-bold text-red-600 ">
-                    {request.bloodGroup}
+
+                <div className="flex items-center gap-2 mb-3 text-base-content/80">
+                  <FaMapMarkerAlt className="text-green-500 text-sm" />
+                  <span className="text-sm">
+                    {request.recipientUpazila}, {request.recipientDistrict}
                   </span>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2 mb-3 text-base-content/80">
-                <FaMapMarkerAlt className="text-green-500 text-sm" />
-                <span className="text-sm">
-                  {request.recipientUpazila}, {request.recipientDistrict}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2 mb-3 text-base-content/80">
-                <FaHospital className="text-blue-500 text-sm" />
-                <span className="text-sm">{request.hospitalName}</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="flex items-center gap-2 text-base-content/80">
-                  <FaCalendarAlt className="text-purple-500 text-sm" />
-                  <span className="text-sm">{request.donationDate}</span>
+                <div className="flex items-center gap-2 mb-3 text-base-content/80">
+                  <FaHospital className="text-blue-500 text-sm" />
+                  <span className="text-sm">{request.hospitalName}</span>
                 </div>
-                <div className="flex items-center gap-2 text-base-content/80">
-                  <FaClock className="text-orange-500 text-sm" />
-                  <span className="text-sm">{request.donationTime}</span>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="flex items-center gap-2 text-base-content/80">
+                    <FaCalendarAlt className="text-purple-500 text-sm" />
+                    <span className="text-sm">{request.donationDate}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-base-content/80">
+                    <FaClock className="text-orange-500 text-sm" />
+                    <span className="text-sm">{request.donationTime}</span>
+                  </div>
                 </div>
+
+                <div className="mb-4">
+                  <p className="text-sm text-base-content/70 line-clamp-2">
+                    {request.requestMessage}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => handleView(request._id)}
+                  className="btn btn-primary w-full group-hover:btn-secondary transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <span>View Details</span>
+                  <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
               </div>
 
-              <div className="mb-4">
-                <p className="text-sm text-base-content/70 line-clamp-2">
-                  {request.requestMessage}
-                </p>
-              </div>
-
-              <button
-                onClick={() => handleView(request._id)}
-                className="btn btn-primary w-full group-hover:btn-secondary transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <span>View Details</span>
-                <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </div>
-
-            <div className="h-1 bg-gradient-to-r from-red-500 to-pink-500"></div>
-          </motion.div>
-        ))}
-      </motion.div>
+              <div className="h-1 bg-gradient-to-r from-red-500 to-pink-500"></div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </div>
   );
 };

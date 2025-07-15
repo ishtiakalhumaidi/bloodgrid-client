@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
-import { FaCalendarAlt, FaPenNib, FaUser } from "react-icons/fa";
+import { FaCalendarAlt, FaFileAlt, FaPenNib, FaUser } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import Loader from "../../components/common/Loader";
 import DOMPurify from "dompurify";
@@ -64,89 +64,109 @@ const BlogsPage = () => {
         </motion.div>
 
         {/* Blog Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {blogs.map((blog, index) => (
-            <motion.div
-              key={blog._id}
-              className="group bg-base-100 rounded-2xl overflow-hidden border border-base-300 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-            >
-              {/* Image Container */}
-              <div className="relative overflow-hidden">
-                <img
-                  src={blog.coverImage}
-                  alt={blog.title}
-                  className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-base-content/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {blogs.length === 0 ? (
+          <div className="col-span-full">
+            <div className="bg-base-100 rounded-xl shadow-lg p-12 text-center border border-base-300">
+              <FaFileAlt className="text-6xl text-base-content/30 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-base-content mb-2">
+                No blogs found
+              </h3>
+              <Link
+                to="/dashboard/content-management/add-blog"
+                className="btn btn-primary gap-2"
+              >
+                <FaPenNib />
+                Create Your First Blog
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {blogs.map((blog, index) => (
+              <motion.div
+                key={blog._id}
+                className="group bg-base-100 rounded-2xl overflow-hidden border border-base-300 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -8 }}
+              >
+                {/* Image Container */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={blog.coverImage}
+                    alt={blog.title}
+                    className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-base-content/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                {/* Author Role Badge */}
-                <div className="absolute top-4 left-4">
-                  <div
-                    className={`badge badge-lg font-semibold capitalize shadow-lg ${
-                      blog.authorRole === "donor"
-                        ? "badge-info"
-                        : blog.authorRole === "volunteer"
-                        ? "badge-success"
-                        : blog.authorRole === "admin"
-                        ? "badge-error"
-                        : "badge-neutral"
-                    }`}
-                  >
-                    {blog.authorRole} blog
-                  </div>
-                </div>
-              </div>
-
-              {/* Content Container */}
-              <div className="p-6 space-y-4">
-                <h2 className="text-xl font-bold text-base-content line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                  {blog.title}
-                </h2>
-
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(blog.content).slice(0, 150),
-                  }}
-                />
-
-                {/* Author and Date Info */}
-                <div className="flex items-center justify-between pt-4 border-t border-base-300">
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="w-8 h-8 rounded-full ring-2 ring-base-300">
-                        <img
-                          src={blog.authorImage}
-                          alt={blog.authorName}
-                          className="object-cover"
-                        />
-                      </div>
+                  {/* Author Role Badge */}
+                  <div className="absolute top-4 left-4">
+                    <div
+                      className={`badge badge-lg font-semibold capitalize shadow-lg ${
+                        blog.authorRole === "donor"
+                          ? "badge-info"
+                          : blog.authorRole === "volunteer"
+                          ? "badge-success"
+                          : blog.authorRole === "admin"
+                          ? "badge-error"
+                          : "badge-neutral"
+                      }`}
+                    >
+                      {blog.authorRole} blog
                     </div>
-                    <span className="text-sm font-medium text-base-content">
-                      {blog.authorName}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm text-base-content/60">
-                    <FaCalendarAlt className="text-secondary" />
-                    <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
 
-                {/* Read More Button */}
-                <Link
-                  to={`/blogs/${blog._id}`}
-                  className="btn btn-primary btn-outline w-full group-hover:btn-primary group-hover:text-base-content transition-all duration-300"
-                >
-                  Read More
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                {/* Content Container */}
+                <div className="p-6 space-y-4">
+                  <h2 className="text-xl font-bold text-base-content line-clamp-2 group-hover:text-primary transition-colors duration-300">
+                    {blog.title}
+                  </h2>
+
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(blog.content).slice(0, 150),
+                    }}
+                  />
+
+                  {/* Author and Date Info */}
+                  <div className="flex items-center justify-between pt-4 border-t border-base-300">
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="w-8 h-8 rounded-full ring-2 ring-base-300">
+                          <img
+                            src={blog.authorImage}
+                            alt={blog.authorName}
+                            className="object-cover"
+                          />
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium text-base-content">
+                        {blog.authorName}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm text-base-content/60">
+                      <FaCalendarAlt className="text-secondary" />
+                      <span>
+                        {new Date(blog.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Read More Button */}
+                  <Link
+                    to={`/blogs/${blog._id}`}
+                    className="btn btn-primary btn-outline w-full group-hover:btn-primary group-hover:text-base-content transition-all duration-300"
+                  >
+                    Read More
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* Floating Write Blog Button */}
         <motion.div

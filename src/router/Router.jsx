@@ -18,6 +18,9 @@ import MyDonationReq from "../pages/dashboard/Donor/MyDonationReq";
 import AllUsersPage from "../pages/dashboard/Admin/AllUser";
 import AllBloodDonationRequests from "../pages/dashboard/Admin/AllBloodDonationRequests ";
 import ContentManage from "../pages/dashboard/common/ContentManage";
+import Fundraiser from "../pages/Fund/Fundraiser";
+import FundraiserPayments from "../pages/dashboard/common/FundraiserPayments";
+import AboutUs from "../pages/AboutUs";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +50,14 @@ export const router = createBrowserRouter([
       {
         path: "blogs/:id",
         Component: BlogDetails,
+      },
+      {
+        path: "fundraiser",
+        Component: Fundraiser,
+      },
+      {
+        path: "about",
+        Component: AboutUs,
       },
     ],
   },
@@ -91,6 +102,10 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         Component: Profile,
+      },
+      {
+        path: "fund-records",
+        Component: FundraiserPayments,
       },
       {
         path: "admin/all-blood-donation-request",

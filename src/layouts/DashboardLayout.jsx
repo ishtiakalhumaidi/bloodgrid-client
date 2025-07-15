@@ -18,6 +18,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { TfiWrite } from "react-icons/tfi";
+import { RiRefund2Line } from "react-icons/ri";
 
 import Logo from "../components/Logo/Logo";
 import ThemeToggle from "../components/Theme/ThemeToggle";
@@ -236,6 +237,13 @@ const DashboardLayout = () => {
                 title={"Content Management"}
                 icon={FaBlog}
                 location={"/dashboard/content-management"}
+              />
+            </motion.li>
+            <motion.li whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+              <DashboardNavLink
+                title={"Fund Records"}
+                icon={RiRefund2Line}
+                location={"/dashboard/fund-records"}
               />
             </motion.li>
           </ul>

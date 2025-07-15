@@ -22,6 +22,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 import Loader from "../../../components/common/Loader";
 import { imageUpload } from "../../../api/imageUpload";
+import { format } from "date-fns";
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
@@ -91,7 +92,7 @@ const Profile = () => {
         bloodGroup: userInfo.bloodGroup || "",
         avatar: null,
       };
-      
+
       reset(formData);
       setOriginalFormData(formData);
 
@@ -116,7 +117,7 @@ const Profile = () => {
         position: "center",
         icon: "success",
         title: "Profile Updated Successfully",
-        text: "Your donor profile has been updated!",
+        text: "Your  profile has been updated!",
         background: "#ffffff",
         color: "#2c3e50",
         iconColor: "#c02427",
@@ -166,7 +167,7 @@ const Profile = () => {
     setIsEditable(false);
     setImagePreview(userInfo.photoUrl || user?.photoURL);
     setUploadError("");
-    
+
     // Reset district and upazila selections
     const districtData = districts.find((d) => d.name === userInfo.district);
     if (districtData) {
@@ -200,35 +201,25 @@ const Profile = () => {
       });
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const getRoleColor = (role) => {
+    if (role === "admin") {
+      return "badge-primary";
+    } else if (role === "volunteer") {
+      return "badge-secondary";
+    } else {
+      return "badge-neutral";
+    }
   };
 
- const getRoleColor = (role) => {
-  if (role === "admin") {
-    return "badge-primary";
-  } else if (role === "volunteer") {
-    return "badge-secondary";
-  } else {
-    return "badge-neutral";
-  }
-};
-
-const getStatusColor = (status) => {
-  if (status === "active") {
-    return "text-success";
-  } else if (status === "blocked") {
-    return "text-error";
-  } else {
-    return "text-base-content";
-  }
-};
-
+  const getStatusColor = (status) => {
+    if (status === "active") {
+      return "text-success";
+    } else if (status === "blocked") {
+      return "text-error";
+    } else {
+      return "text-base-content";
+    }
+  };
 
   if (isLoading) return <Loader />;
 
@@ -253,24 +244,38 @@ const getStatusColor = (status) => {
               <div className="flex items-center gap-4">
                 <FaHeart className="text-3xl animate-pulse" />
                 <div>
-                  <h1 className="text-3xl font-bold">Donor Profile</h1>
+                  <h1 className="text-3xl font-bold capitalize">
+                    {userInfo.role} Profile
+                  </h1>
                   <p className="text-primary-content/80 mt-1">
-                    Manage your blood donor information
+                    Manage your information
                   </p>
                 </div>
               </div>
-              
+
               {/* Status and Role Badges */}
               <div className="flex flex-col items-end gap-2">
                 <div className="flex items-center gap-2">
                   <FaShieldAlt className="text-accent" />
-                  <span className={`badge ${getRoleColor(userInfo.role)} text-white font-medium`}>
+                  <span
+                    className={`badge ${getRoleColor(
+                      userInfo.role
+                    )} text-white font-medium`}
+                  >
                     {userInfo.role?.toUpperCase() || "DONOR"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${userInfo.status === 'active' ? 'bg-accent' : 'bg-error'}`}></div>
-                  <span className={`text-sm font-medium ${getStatusColor(userInfo.status)}`}>
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      userInfo.status === "active" ? "bg-accent" : "bg-error"
+                    }`}
+                  ></div>
+                  <span
+                    className={`text-sm font-medium ${getStatusColor(
+                      userInfo.status
+                    )}`}
+                  >
                     {userInfo.status?.toUpperCase() || "ACTIVE"}
                   </span>
                 </div>
@@ -343,7 +348,9 @@ const getStatusColor = (status) => {
                           className="absolute bottom-0 right-0 w-12 h-12 bg-primary text-primary-content rounded-full flex items-center justify-center cursor-pointer transform transition-all duration-300 hover:scale-110 hover:bg-primary/80 shadow-lg"
                         >
                           <FaUpload
-                            className={`w-5 h-5 ${isUploading && "animate-bounce"}`}
+                            className={`w-5 h-5 ${
+                              isUploading && "animate-bounce"
+                            }`}
                           />
                         </label>
                         <input
@@ -362,7 +369,7 @@ const getStatusColor = (status) => {
                       </>
                     )}
                   </div>
-                  
+
                   <div className="text-center">
                     <p className="text-sm text-base-content/60">
                       {isEditable ? "Upload your photo" : "Profile Photo"}
@@ -373,7 +380,9 @@ const getStatusColor = (status) => {
                       </span>
                     )}
                     {uploadError && (
-                      <span className="text-error text-sm block mt-1">{uploadError}</span>
+                      <span className="text-error text-sm block mt-1">
+                        {uploadError}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -386,15 +395,17 @@ const getStatusColor = (status) => {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-base-content/60">Member Since:</span>
+                      <span className="text-base-content/60">
+                        Member Since:
+                      </span>
                       <p className="font-medium text-base-content">
-                        {formatDate(userInfo.createAt)}
+                        {format(userInfo.createAt, "MMM dd, yyyy")}
                       </p>
                     </div>
                     <div>
                       <span className="text-base-content/60">Last Login:</span>
                       <p className="font-medium text-base-content">
-                        {formatDate(userInfo.loginAt)}
+                        {format(userInfo.loginAt, "MMM dd, yyyy | p")}
                       </p>
                     </div>
                   </div>
@@ -408,7 +419,7 @@ const getStatusColor = (status) => {
                   <h3 className="text-lg font-semibold text-base-content border-b border-base-300 pb-2">
                     Personal Information
                   </h3>
-                  
+
                   {/* Name Field */}
                   <div className="form-control">
                     <label className="label">
@@ -498,7 +509,7 @@ const getStatusColor = (status) => {
                   <h3 className="text-lg font-semibold text-base-content border-b border-base-300 pb-2">
                     Location Information
                   </h3>
-                  
+
                   {/* District Field */}
                   <div className="form-control">
                     <label className="label">
@@ -546,7 +557,7 @@ const getStatusColor = (status) => {
                         {...register("upazila", {
                           required: "Upazila is required",
                         })}
-                        className={`select select-bordered w-full pl-12 bg-white border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all ${
+                        className={`select select-bordered w-full pl-12 bg-base-100 border-base-300 focus:border-primary focus:outline-none transition-all ${
                           errors.upazila ? "border-red-500" : ""
                         }`}
                       >
