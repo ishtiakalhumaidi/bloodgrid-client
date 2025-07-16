@@ -12,7 +12,7 @@ const useRole = () => {
     error,
   } = useQuery({
     queryKey: ["userRole", user?.email],
-    enabled: !!user?.email, // only run if email exists
+    enabled: !!user?.email, 
     queryFn: async () => {
       const res = await axiosSecure.get(`/user-role?email=${user?.email}`);
       return res.data.role;

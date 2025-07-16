@@ -18,10 +18,13 @@ import useRole from "../../../hooks/useRole";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
 import EditBlog from "./EditBlog";
+import { format, parseISO } from "date-fns";
+import useAxios from "../../../hooks/useAxios";
 
 const ContentManage = () => {
   const [filter, setFilter] = useState("all");
   const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios();
   const { role } = useRole();
   const queryClient = useQueryClient();
   const [selectedBlogId, setSelectedBlogId] = useState(null);
@@ -67,7 +70,7 @@ const ContentManage = () => {
   });
   console.log(stateData);
   const deleteBlog = useMutation({
-    mutationFn: async (id) => await axiosSecure.delete(`/blogs/${id}`),
+    mutationFn: async (id) => await axiosInstance.delete(`/blogs/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(["blogs"]);
       Swal.fire("Deleted!", "Blog has been deleted.", "success");
@@ -76,7 +79,7 @@ const ContentManage = () => {
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }) =>
-      await axiosSecure.patch(`/blogs/${id}`, { status }),
+      await axiosInstance.patch(`/blogs/${id}`, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries(["blogs"]);
     },
@@ -276,7 +279,8 @@ const ContentManage = () => {
               <div className="p-4 space-y-3">
                 <div className="flex items-center gap-2 text-xs text-base-content/50">
                   <FaClock className="text-primary" />
-                  {new Date(blog.createdAt).toLocaleDateString()}
+                  {blog?.createDAt &&
+                    format(parseISO(blog.createAt), "MMM dd, yyyy")}
                 </div>
 
                 <h3 className="font-bold text-lg text-base-content line-clamp-2 group-hover:text-primary transition-colors">

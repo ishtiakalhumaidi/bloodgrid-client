@@ -538,13 +538,13 @@ const RegisterForm = () => {
 
               <p className="text-center text-sm text-base-content/60">
                 By registering, you agree to our{" "}
-                <a href="#" className="text-primary hover:underline">
+                <Link to="/terms" className="text-primary hover:underline">
                   Terms of Service
-                </a>{" "}
+                </Link>{" "}
                 and{" "}
-                <a href="#" className="text-primary hover:underline">
+                <Link to="/privacy" className="text-primary hover:underline">
                   Privacy Policy
-                </a>
+                </Link>
               </p>
               <div className="divider my-1"></div>
               <p className="text-center text-sm text-base-content/60 ">

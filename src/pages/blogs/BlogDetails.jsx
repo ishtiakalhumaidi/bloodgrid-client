@@ -1,11 +1,18 @@
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { FaUser, FaClock, FaCalendarAlt, FaTag, FaEye, FaEdit } from "react-icons/fa";
+import {
+  FaUser,
+  FaClock,
+  FaCalendarAlt,
+  FaTag,
+  FaEye,
+  FaEdit,
+} from "react-icons/fa";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../components/common/Loader";
 import DOMPurify from "dompurify";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -165,14 +172,17 @@ const BlogDetails = () => {
           <div className="flex items-center gap-2 text-base-content/70">
             <FaCalendarAlt className="text-secondary" />
             <span className="font-medium">
-              {format(new Date(blog.createdAt), "MMMM d, yyyy, p")}
+              {blog.createdAt &&
+                format(parseISO(blog.createdAt), "MMMM d, yyyy, p")}
             </span>
           </div>
           {blog.updatedAt && (
             <div className="flex items-center gap-2 text-base-content/70">
               <FaEdit className="text-secondary" />
               <span className="font-medium">
-                {format(new Date(blog.updatedAt), "MMMM d, yyyy, p")} (edited)
+                {blog?.updatedAt &&
+                  format(parseISO(blog.updatedAt), "MMMM d, yyyy, p")}{" "}
+                (edited)
               </span>
             </div>
           )}

@@ -18,9 +18,9 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router";
 import EditDonationRequest from "./EditDonationRequest";
 import DonationReqCard from "../common/DonationReqCard";
+import useAxios from "../../../hooks/useAxios";
 
 const statuses = ["all", "pending", "inprogress", "done", "canceled"];
 
@@ -28,7 +28,7 @@ const MyDonationReq = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const axiosInstance = useAxios();
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [editRequestId, setEditRequestId] = useState(null);
@@ -49,7 +49,7 @@ const MyDonationReq = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      return axiosSecure.delete(`/donation-requests/${id}`);
+      return axiosInstance.delete(`/donation-requests/${id}`);
     },
     onSuccess: () => {
       Swal.fire("Deleted!", "Donation request has been deleted.", "success");
@@ -59,11 +59,15 @@ const MyDonationReq = () => {
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }) => {
-      return axiosSecure.patch(`/donation-requests/${id}`, { status });
+      return axiosInstance.patch(`/donation-requests/${id}`, { status });
     },
     onSuccess: (_, { status }) => {
       Swal.fire("Updated!", `Marked as ${status}.`, "success");
-      queryClient.invalidateQueries(["myDonationRequests","dashboardStats", "donationRequestStats"]);
+      queryClient.invalidateQueries([
+        "myDonationRequests",
+        "dashboardStats",
+        "donationRequestStats",
+      ]);
     },
   });
 

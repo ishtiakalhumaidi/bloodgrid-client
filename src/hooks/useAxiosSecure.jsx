@@ -1,43 +1,47 @@
+// hooks/useAxiosSecure.js
+import { useEffect } from "react";
 import axios from "axios";
-import useAuth from "./useAuth";
 import { useNavigate } from "react-router";
+import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-  baseURL: `http://localhost:3000`,
+  baseURL: "https://bloodgrid-server.vercel.app/",
 });
+
+let interceptorsSet = false;
 
 const useAxiosSecure = () => {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
-  axiosSecure.interceptors.request.use(
-    (config) => {
-      const token = user?.accessToken;
-      config.headers.Authorization = `Bearer ${token}`;
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-  axiosSecure.interceptors.response.use(
-    (res) => {
-      return res;
-    },
-    (error) => {
-      console.log("inside res interceptor", error);
-      const status = error.status;
-      if (status === 403) {
-        navigate("/forbidden");
-      } else if (status === 401) {
-        logOut()
-          .then(() => {
+
+  useEffect(() => {
+    if (!interceptorsSet && user?.accessToken) {
+      interceptorsSet = true;
+
+      axiosSecure.interceptors.request.use(
+        (config) => {
+          config.headers.Authorization = `Bearer ${user.accessToken}`;
+          return config;
+        },
+        (error) => Promise.reject(error)
+      );
+
+      // ✅ Response Interceptor
+      axiosSecure.interceptors.response.use(
+        (res) => res,
+        async (error) => {
+          const status = error.response?.status;
+          if (status === 403) {
+            navigate("/forbidden");
+          } else if (status === 401) {
+            await logOut();
             navigate("/auth/login");
-          })
-          .catch(() => {});
-      }
-      return Promise.reject(error);
+          }
+          return Promise.reject(error);
+        }
+      );
     }
-  );
+  }, [user?.accessToken, logOut, navigate]);
 
   return axiosSecure;
 };

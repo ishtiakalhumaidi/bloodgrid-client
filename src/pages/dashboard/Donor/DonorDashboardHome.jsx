@@ -23,11 +23,13 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
 import { useState } from "react";
 import EditDonationRequest from "./EditDonationRequest";
+import useAxios from "../../../hooks/useAxios";
 
 const DonorDashboardHome = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios()
   const navigate = useNavigate();
   const [editRequest, setEditRequest] = useState(null);
 
@@ -45,6 +47,7 @@ const DonorDashboardHome = () => {
       return res.data;
     },
     enabled: !!user?.email,
+    retry: false,
   });
 
   const { data: statsData } = useQuery({
@@ -81,7 +84,7 @@ const DonorDashboardHome = () => {
       confirmButtonText: "Yes, delete it!",
     });
     if (result.isConfirmed) {
-      await axiosSecure.delete(`/donation-requests/${id}`);
+      await axiosInstance.delete(`/donation-requests/${id}`);
       refetch();
       Swal.fire("Deleted!", "Donation request has been deleted.", "success");
     }
@@ -89,7 +92,7 @@ const DonorDashboardHome = () => {
 
   const { mutate: updateStatus } = useMutation({
     mutationFn: async ({ id, status }) => {
-      const res = await axiosSecure.patch(`/donation-requests/${id}`, {
+      const res = await axiosInstance.patch(`/donation-requests/${id}`, {
         status,
       });
       return res.data;

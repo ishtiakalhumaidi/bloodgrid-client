@@ -28,28 +28,30 @@ import AdminVolunteerDashboardHome from "../pages/dashboard/common/AdminVoluntee
 import AdminVolunteerRoute from "../routes/AdminVolunteerRoute";
 import DonorRoute from "../routes/DonorRoute";
 import ErrorPage from "../pages/Error/ErrorPage";
+import PrivacyPolicy from "../pages/Policy/PrivacyPolicy";
+import TermsOfService from "../pages/Policy/TermsOfService";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: MainLayout,
-    errorElement:<ErrorPage/>,
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        Component: Home,
+        element: <Home />,
       },
       {
-        path: "/forbidden",
-        Component: Forbidden,
+        path: "forbidden",
+        element: <Forbidden />,
       },
       {
         path: "search-donor",
-        Component: SearchDonor,
+        element: <SearchDonor />,
       },
       {
         path: "donation-requests",
-        Component: DonationRequest,
+        element: <DonationRequest />,
       },
       {
         path: "donation-request/:id",
@@ -62,11 +64,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "blogs",
-        Component: BlogsPage,
+        element: <BlogsPage />,
       },
       {
         path: "blogs/:id",
-        Component: BlogDetails,
+        element: <BlogDetails />,
       },
       {
         path: "fundraiser",
@@ -78,21 +80,30 @@ export const router = createBrowserRouter([
       },
       {
         path: "about",
-        Component: AboutUs,
+        element: <AboutUs />,
       },
+      {
+        path: "privacy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "terms",
+        element: <TermsOfService />,
+      },
+      
     ],
   },
   {
     path: "auth",
-    Component: AuthLayout,
+    element: <AuthLayout />,
     children: [
       {
         path: "register",
-        Component: RegisterForm,
+        element: <RegisterForm />,
       },
       {
         path: "login",
-        Component: Login,
+        element: <Login />,
       },
     ],
   },
@@ -106,7 +117,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: DashboardHome,
+        element: <DashboardHome />,
       },
       {
         path: "create-donation-request",
@@ -134,15 +145,14 @@ export const router = createBrowserRouter([
       },
       {
         path: "content-management/add-blog",
-        Component: CreateBlog,
+        element: <CreateBlog />,
       },
       {
         path: "profile",
-        Component: Profile,
+        element: <Profile />,
       },
       {
         path: "fund-records",
-        Component: FundraiserPayments,
         element: (
           <AdminRoute>
             <FundraiserPayments />

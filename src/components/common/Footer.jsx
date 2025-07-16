@@ -173,12 +173,7 @@ const Footer = () => {
               >
                 Terms of Service
               </Link>
-              <Link
-                to="/cookies"
-                className="hover:text-primary transition-colors duration-300"
-              >
-                Cookie Policy
-              </Link>
+             
             </div>
           </motion.div>
         </motion.div>

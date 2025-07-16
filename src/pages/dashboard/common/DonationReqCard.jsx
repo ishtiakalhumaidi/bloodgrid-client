@@ -17,9 +17,10 @@ import { Link } from "react-router";
 import useRole from "../../../hooks/useRole";
 import useAuth from "../../../hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+
 import Swal from "sweetalert2";
 import { FaBarsProgress } from "react-icons/fa6";
+import useAxios from "../../../hooks/useAxios";
 
 const DonationReqCard = ({
   req,
@@ -30,10 +31,10 @@ const DonationReqCard = ({
   const { user } = useAuth();
   const { role } = useRole();
   const queryClient = useQueryClient();
-  const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios()
   const mutation = useMutation({
     mutationFn: async () => {
-      return axiosSecure.patch(`/donation-requests/${req._id}/donate`, {
+      return axiosInstance.patch(`/donation-requests/${req._id}/donate`, {
         status: "inprogress",
       });
     },

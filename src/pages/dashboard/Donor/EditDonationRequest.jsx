@@ -11,10 +11,12 @@ import {
 
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import axios from "axios";
+import useAxios from "../../../hooks/useAxios";
 
 const EditDonationRequest = ({ requestId, onClose }) => {
   const queryClient = useQueryClient();
   const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -101,7 +103,7 @@ const EditDonationRequest = ({ requestId, onClose }) => {
 
   const mutation = useMutation({
     mutationFn: async (updatedRequest) => {
-      const res = await axiosSecure.patch(
+      const res = await axiosInstance.patch(
         `/donation-requests/${requestId}`,
         updatedRequest
       );

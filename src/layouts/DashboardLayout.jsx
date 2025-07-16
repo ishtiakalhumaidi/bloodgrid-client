@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, NavLink, Outlet } from "react-router";
+import { Outlet } from "react-router";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { BiSolidDonateBlood } from "react-icons/bi";
@@ -7,32 +7,28 @@ import {
   FaHome,
   FaBell,
   FaHeartbeat,
-  FaSearch,
   FaBlog,
   FaUsers,
-  FaDonate,
-  FaChartLine,
-  FaHandsHelping,
-  FaBars,
   FaUser,
+  FaBars,
   FaTimes,
 } from "react-icons/fa";
 import { TfiWrite } from "react-icons/tfi";
 import { RiRefund2Line } from "react-icons/ri";
+import { MdManageAccounts } from "react-icons/md";
 
 import Logo from "../components/Logo/Logo";
 import ThemeToggle from "../components/Theme/ThemeToggle";
 import DashboardNavLink from "../pages/dashboard/common/DashboardNavLink";
 import useCurrentDateTime from "../hooks/useCurrentDateTime";
-import { format } from "date-fns";
 import useRole from "../hooks/useRole";
 import useAuth from "../hooks/useAuth";
-import { MdManageAccounts } from "react-icons/md";
 
 const DashboardLayout = () => {
   const { user } = useAuth();
   const { role } = useRole();
   const safeUser = user || {};
+  const dateTime = useCurrentDateTime();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const sidebarVariants = {
@@ -119,7 +115,7 @@ const DashboardLayout = () => {
           animate={{ opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          {format(useCurrentDateTime(), "dd MMMM yyyy, hh:mm:ss a")}
+          {dateTime}
         </motion.div>
       </motion.div>
 
@@ -268,6 +264,8 @@ const DashboardLayout = () => {
     </motion.div>
   );
 
+  // --------------------------------------------------------
+
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <title>Dashboard | BloodGrid</title>
@@ -279,10 +277,7 @@ const DashboardLayout = () => {
         animate="visible"
       >
         <div className="flex justify-between items-center px-6 py-4">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
             <Logo />
           </motion.div>
           <span className="text-xl font-bold text-primary hidden md:inline">
@@ -290,10 +285,7 @@ const DashboardLayout = () => {
           </span>
 
           <div className="flex items-center gap-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
               <ThemeToggle />
             </motion.div>
             <motion.button
@@ -313,6 +305,7 @@ const DashboardLayout = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
                 <FaTimes className="text-base-content/70" />
@@ -337,37 +330,22 @@ const DashboardLayout = () => {
           </div>
         </motion.aside>
 
-        {/* Mobile Sidebar */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              className="lg:hidden fixed top-[73px] bottom-0 left-0 right-0 z-40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+        {/* Mobile Sidebar (NO animation now) */}
+        {isMobileMenuOpen && (
+          <div
+            className="lg:hidden fixed top-[73px] bottom-0 left-0 right-0 z-40 bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <nav
+              className="w-80 h-full bg-base-100 shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside nav
             >
-              <motion.div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                onClick={() => setIsMobileMenuOpen(false)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              />
-              <motion.nav
-                className="w-80 h-full bg-base-100 shadow-2xl"
-                variants={sidebarVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-base-300 scrollbar-track-base-100">
-                  {navLinks}
-                </div>
-              </motion.nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-base-300 scrollbar-track-base-100">
+                {navLinks}
+              </div>
+            </nav>
+          </div>
+        )}
 
         {/* Main Content */}
         <motion.main

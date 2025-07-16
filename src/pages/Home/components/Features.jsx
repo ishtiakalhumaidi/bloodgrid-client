@@ -42,9 +42,12 @@ const Features = () => {
                 login required for emergency searches.
               </p>
               <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="btn btn-ghost btn-sm text-primary">
+                <Link
+                  to={"/search-donor"}
+                  className="btn btn-ghost btn-sm text-primary"
+                >
                   Learn More →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -65,9 +68,12 @@ const Features = () => {
                 country with live updates.
               </p>
               <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="btn btn-ghost btn-sm text-primary">
+                <Link
+                  to={"/donation-requests"}
+                  className="btn btn-ghost btn-sm text-primary"
+                >
                   View Requests →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -88,9 +94,12 @@ const Features = () => {
                 status in real-time.
               </p>
               <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="btn btn-ghost btn-sm text-primary">
+                <Link
+                  to={"/about"}
+                  className="btn btn-ghost btn-sm text-primary"
+                >
                   See Process →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -111,9 +120,12 @@ const Features = () => {
                 complete transparency.
               </p>
               <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="btn btn-ghost btn-sm text-primary">
+                <Link
+                  to={"/fundraiser"}
+                  className="btn btn-ghost btn-sm text-primary"
+                >
                   Donate Now →
-                </button>
+                </Link>
               </div>
             </div>
           </div>

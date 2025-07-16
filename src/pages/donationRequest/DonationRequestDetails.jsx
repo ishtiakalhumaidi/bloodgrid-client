@@ -25,11 +25,13 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Loader from "../../components/common/Loader";
 import useRole from "../../hooks/useRole";
+import useAxios from "../../hooks/useAxios";
 
 const DonationRequestDetails = () => {
   const { role } = useRole();
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios();
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -45,7 +47,7 @@ const DonationRequestDetails = () => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      return axiosSecure.patch(`/donation-requests/${id}/donate`, {
+      return axiosInstance.patch(`/donation-requests/${id}/donate`, {
         donorName: user.displayName,
         donorEmail: user?.email,
       });

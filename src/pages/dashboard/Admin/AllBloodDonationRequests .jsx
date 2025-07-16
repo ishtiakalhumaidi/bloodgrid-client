@@ -16,19 +16,22 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+
 import Loader from "../../../components/common/Loader";
 import EditDonationRequest from "../Donor/EditDonationRequest";
 import DonationReqCard from "../common/DonationReqCard";
 import { BiSolidDonateBlood } from "react-icons/bi";
+import useAxios from "../../../hooks/useAxios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const statuses = ["all", "pending", "inprogress", "done", "canceled"];
 const limit = 5;
 
 const AllBloodDonationRequests = () => {
   const queryClient = useQueryClient();
-  const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios();
   const [editRequestId, setEditRequestId] = useState(null);
+  const axiosSecure = useAxiosSecure();
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
 
@@ -49,7 +52,7 @@ const AllBloodDonationRequests = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      return axiosSecure.delete(`/donation-requests/${id}`);
+      return axiosInstance.delete(`/donation-requests/${id}`);
     },
     onSuccess: () => {
       Swal.fire("Deleted!", "Donation request has been deleted.", "success");
@@ -59,7 +62,7 @@ const AllBloodDonationRequests = () => {
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }) => {
-      return axiosSecure.patch(`/donation-requests/${id}`, { status });
+      return axiosInstance.patch(`/donation-requests/${id}`, { status });
     },
     onSuccess: (_, { status }) => {
       Swal.fire("Updated!", `Marked as ${status}.`, "success");

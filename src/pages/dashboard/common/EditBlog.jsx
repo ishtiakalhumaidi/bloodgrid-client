@@ -8,9 +8,11 @@ import JoditEditor from "jodit-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { imageUpload } from "../../../api/imageUpload";
+import useAxios from "../../../hooks/useAxios";
 
 const EditBlog = ({ blogId, onClose }) => {
   const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios()
   const [coverPreview, setCoverPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const editorRef = useRef(null);
@@ -57,7 +59,7 @@ const EditBlog = ({ blogId, onClose }) => {
     mutationFn: async ({ blogId, updatedBlog }) => {
       console.log("Sending PATCH to", `/blogs/${blogId}`);
       console.log("Payload:", updatedBlog);
-      const res = await axiosSecure.patch(`/blogs/${blogId}`, updatedBlog);
+      const res = await axiosInstance.patch(`/blogs/${blogId}`, updatedBlog);
       console.log(res.data)
       return res.data;
     },

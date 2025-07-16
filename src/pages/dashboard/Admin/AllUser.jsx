@@ -12,9 +12,11 @@ import {
 } from "react-icons/fa";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/common/Loader";
+import useAxios from "../../../hooks/useAxios";
 
 const AllUsersPage = () => {
   const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios()
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
@@ -40,7 +42,7 @@ const AllUsersPage = () => {
 
   const updateUser = useMutation({
     mutationFn: async ({ id, payload }) => {
-      await axiosSecure.patch(`/admin/users/${id}`, payload);
+      await axiosInstance.patch(`/admin/users/${id}`, payload);
     },
     onSuccess: () => queryClient.invalidateQueries(["allUsers"]),
   });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,12 +22,14 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 import Loader from "../../../components/common/Loader";
 import { imageUpload } from "../../../api/imageUpload";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import useAxios from "../../../hooks/useAxios";
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
+  const axiosInstance = useAxios();
   const [isEditable, setIsEditable] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -36,6 +38,28 @@ const Profile = () => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [upazilas, setUpazilas] = useState([]);
   const [originalFormData, setOriginalFormData] = useState({});
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      bloodGroup: "",
+      avatar: "",
+      district: "",
+      upazila: "",
+    },
+  });
+
+  // Watch district changes
+  const watchedDistrict = watch("district");
 
   // Fetch districts
   useEffect(() => {
@@ -53,7 +77,11 @@ const Profile = () => {
   // Fetch upazilas based on selected district
   useEffect(() => {
     const fetchUpazilas = async () => {
-      if (!selectedDistrict) return;
+      if (!selectedDistrict) {
+        setUpazilas([]);
+        return;
+      }
+      
       try {
         const res = await axios.get("/upazilas.json");
         const filteredUpazilas = res.data.filter(
@@ -62,10 +90,20 @@ const Profile = () => {
         setUpazilas(filteredUpazilas);
       } catch (err) {
         console.error("Error fetching upazilas:", err);
+        setUpazilas([]);
       }
     };
     fetchUpazilas();
   }, [selectedDistrict]);
+
+  // Handle district change from form
+  useEffect(() => {
+    if (watchedDistrict && watchedDistrict !== selectedDistrict) {
+      setSelectedDistrict(watchedDistrict);
+      // Reset upazila when district changes
+      setValue("upazila", "");
+    }
+  }, [watchedDistrict, selectedDistrict, setValue]);
 
   const { data: userInfo = {}, isLoading } = useQuery({
     queryKey: ["userProfile", user?.email],
@@ -76,40 +114,57 @@ const Profile = () => {
     enabled: !!user?.email,
   });
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
+  
   useEffect(() => {
-    if (userInfo && districts.length > 0) {
-      const formData = {
-        name: userInfo.name || "",
-        email: userInfo.email || "",
-        bloodGroup: userInfo.bloodGroup || "",
-        avatar: null,
+    if (userInfo?.email && districts.length > 0 && !isInitialized) {
+      const initializeFormData = () => {
+        // Find matching district
+        const matchedDistrict = districts.find(
+          (d) =>
+            d.name === userInfo.district ||
+            String(d.id) === String(userInfo.district)
+        );
+        const districtId = matchedDistrict?.id || "";
+
+        const formData = {
+          name: userInfo.name || "",
+          email: userInfo.email || "",
+          bloodGroup: userInfo.bloodGroup || "",
+          avatar: userInfo.photoUrl || "",
+          district: districtId,
+          upazila: userInfo.upazila || "",
+        };
+
+        // Set form values
+        reset(formData);
+        setImagePreview(userInfo.photoUrl || user?.photoURL);
+        setOriginalFormData(formData);
+        setSelectedDistrict(districtId);
+        setIsInitialized(true);
       };
 
-      reset(formData);
-      setOriginalFormData(formData);
-
-      const districtData = districts.find((d) => d.name === userInfo.district);
-      if (districtData) {
-        setSelectedDistrict(districtData.id);
-        setValue("district", districtData.id);
-      }
-
-      setValue("upazila", userInfo.upazila || "");
-      setImagePreview(userInfo.photoUrl || user?.photoURL);
+      initializeFormData();
     }
-  }, [userInfo, user, districts, reset, setValue]);
+  }, [userInfo, districts, user?.photoURL, reset, isInitialized]);
+
+  // Set upazila value after upazilas are loaded
+  useEffect(() => {
+    if (upazilas.length > 0 && userInfo.upazila && isInitialized) {
+      const matchedUpazila = upazilas.find(
+        (upazila) => upazila.name === userInfo.upazila
+      );
+      if (matchedUpazila) {
+        setValue("upazila", userInfo.upazila);
+      }
+    }
+  }, [upazilas, userInfo.upazila, setValue, isInitialized]);
 
   const updateMutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axiosSecure.put(`/user/update/${userInfo.email}`, data);
+      const res = await axiosInstance.put(
+        `/user/update/${userInfo.email}`,
+        data
+      );
       return res.data;
     },
     onSuccess: () => {
@@ -117,7 +172,7 @@ const Profile = () => {
         position: "center",
         icon: "success",
         title: "Profile Updated Successfully",
-        text: "Your  profile has been updated!",
+        text: "Your profile has been updated!",
         background: "#ffffff",
         color: "#2c3e50",
         iconColor: "#c02427",
@@ -162,20 +217,22 @@ const Profile = () => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     reset(originalFormData);
     setIsEditable(false);
     setImagePreview(userInfo.photoUrl || user?.photoURL);
     setUploadError("");
 
     // Reset district and upazila selections
-    const districtData = districts.find((d) => d.name === userInfo.district);
+    const districtData = districts.find(
+      (d) => d.name === userInfo.district || String(d.id) === String(userInfo.district)
+    );
     if (districtData) {
       setSelectedDistrict(districtData.id);
       setValue("district", districtData.id);
     }
     setValue("upazila", userInfo.upazila || "");
-  };
+  }, [originalFormData, userInfo, user?.photoURL, districts, reset, setValue]);
 
   const onSubmit = (data) => {
     const selectedDistrictData = districts.find(
@@ -399,13 +456,18 @@ const Profile = () => {
                         Member Since:
                       </span>
                       <p className="font-medium text-base-content">
-                        {format(userInfo.createAt, "MMM dd, yyyy")}
+                        {userInfo?.createAt &&
+                          format(parseISO(userInfo.createAt), "MMM dd, yyyy")}
                       </p>
                     </div>
                     <div>
                       <span className="text-base-content/60">Last Login:</span>
                       <p className="font-medium text-base-content">
-                        {format(userInfo.loginAt, "MMM dd, yyyy | p")}
+                        {userInfo?.loginAt &&
+                          format(
+                            parseISO(userInfo.loginAt),
+                            "MMM dd, yyyy | p"
+                          )}
                       </p>
                     </div>
                   </div>
@@ -523,7 +585,6 @@ const Profile = () => {
                         {...register("district", {
                           required: "District is required",
                         })}
-                        onChange={(e) => setSelectedDistrict(e.target.value)}
                         className={`select select-bordered w-full pl-12 bg-base-100 border-base-300 focus:border-primary focus:outline-none transition-all ${
                           errors.district ? "border-error" : ""
                         }`}
@@ -558,7 +619,7 @@ const Profile = () => {
                           required: "Upazila is required",
                         })}
                         className={`select select-bordered w-full pl-12 bg-base-100 border-base-300 focus:border-primary focus:outline-none transition-all ${
-                          errors.upazila ? "border-red-500" : ""
+                          errors.upazila ? "border-error" : ""
                         }`}
                       >
                         <option value="">Select Upazila</option>
@@ -568,10 +629,10 @@ const Profile = () => {
                           </option>
                         ))}
                       </select>
-                      <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40" />
                     </div>
                     {errors.upazila && (
-                      <span className="text-red-500 text-sm mt-1">
+                      <span className="text-error text-sm mt-1">
                         {errors.upazila.message}
                       </span>
                     )}

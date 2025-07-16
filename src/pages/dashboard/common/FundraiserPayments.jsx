@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 const FundraiserPayments = () => {
   const axiosSecure = useAxiosSecure();
@@ -10,7 +10,7 @@ const FundraiserPayments = () => {
   const { data: payments = [], isLoading } = useQuery({
     queryKey: ["fundraiserPayments"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/fundraiser-payments"); 
+      const res = await axiosSecure.get("/fundraiser-payments");
       return res.data;
     },
   });
@@ -55,7 +55,10 @@ const FundraiserPayments = () => {
                       </span>
                     )}
                   </td>
-                  <td>{format(item.paidAt,"MMM dd, yyyy | p")}</td>
+                  <td>
+                    {item?.paidAt &&
+                      format(parseISO(item.paidAt), "MMM dd, yyyy | p")}
+                  </td>
                 </tr>
               ))}
             </tbody>
