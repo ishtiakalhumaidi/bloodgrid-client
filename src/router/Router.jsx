@@ -55,7 +55,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "donation-request/:id",
-
         element: (
           <PrivateRoute>
             <DonationRequestDetails />
@@ -68,7 +67,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "blogs/:id",
-        element: <BlogDetails />,
+        element: (
+          <PrivateRoute>
+            <BlogDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "fundraiser",
@@ -90,7 +93,6 @@ export const router = createBrowserRouter([
         path: "terms",
         element: <TermsOfService />,
       },
-      
     ],
   },
   {
