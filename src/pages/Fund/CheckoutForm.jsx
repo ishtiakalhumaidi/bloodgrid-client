@@ -82,12 +82,12 @@ const CheckoutForm = () => {
         setSuccess(true);
         Swal.fire({
           icon: "success",
-          title: "Payment Successful",
+          title: "Donation Successful",
           text: `Thank you, ${user?.displayName || "Donor"}!`,
         });
       }
     } catch (err) {
-      setError(err.message || "Payment failed.");
+      setError(err.message || "Donation failed.");
     } finally {
       setIsPaying(false);
     }
@@ -97,12 +97,12 @@ const CheckoutForm = () => {
 
   return (
     <div className="max-w-2xl mx-auto my-12 p-8 bg-base-100 rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-base-content">Complete Your Payment</h2>
+      <h2 className="text-2xl font-bold mb-6 text-base-content">Complete Your Donation</h2>
 
       {success ? (
         <div className="alert alert-success">
           <span className="text-success-content font-medium">
-            Payment successful! Thank you for your support.
+            Donation successful! Thank you for your support.
           </span>
         </div>
       ) : (

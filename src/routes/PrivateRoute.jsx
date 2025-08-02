@@ -12,14 +12,15 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     if (!isLoading && !user) {
+      setRedirect(true); 
       Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "warning",
         title: "Login Required",
         text: "Please log in to access this page.",
-        icon: "warning",
         showConfirmButton: false,
         timer: 1500,
-      }).then(() => {
-        setRedirect(true);
       });
     }
   }, [isLoading, user]);
@@ -29,7 +30,9 @@ const PrivateRoute = ({ children }) => {
   }
 
   if (redirect) {
-    return <Navigate state={{ from: location.pathname }} to="/auth/login" replace />;
+    return (
+      <Navigate state={{ from: location.pathname }} to="/auth/login" replace />
+    );
   }
 
   return children;
