@@ -288,7 +288,7 @@ const DashboardLayout = () => {
             <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
               <ThemeToggle />
             </motion.div>
-            <motion.button
+            {/* <motion.button
               className="p-2 hover:bg-base-200 rounded-full relative transition-colors duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -299,7 +299,7 @@ const DashboardLayout = () => {
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               />
-            </motion.button>
+            </motion.button> */}
             <motion.button
               className="lg:hidden p-2 hover:bg-base-200 rounded-full cursor-pointer transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -338,7 +338,7 @@ const DashboardLayout = () => {
           >
             <nav
               className="w-80 h-full bg-base-100 shadow-2xl"
-              onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside nav
+              onClick={(e) => e.stopPropagation()} 
             >
               <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-base-300 scrollbar-track-base-100">
                 {navLinks}
