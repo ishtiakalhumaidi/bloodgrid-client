@@ -34,7 +34,7 @@ const ContactUs = () => {
   }, [isSubmitSuccessful, reset]);
 
   return (
-    <section className="bg-base-200 py-20 px-4 relative overflow-hidden">
+    <section id="contact" className="bg-base-200 py-20 px-4 relative overflow-hidden">
       {/* Background Pattern */}
       <div  className="absolute inset-0 opacity-10">
         <div className="absolute left-0 top-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />

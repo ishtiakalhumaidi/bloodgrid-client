@@ -4,15 +4,17 @@ import Features from "./components/Features";
 import ContactUs from "./components/ContactUs";
 import StatsSection from "./components/StatsSection";
 import FAQ from "./components/FAQ";
+import PartnerOrganizations from "./components/PartnerOrganizations";
 
 const Home = () => {
   return (
     <div>
       <Banner />
       <Features />
-      <ContactUs />
       <StatsSection />
+      <PartnerOrganizations />
       <FAQ />
+      <ContactUs />
     </div>
   );
 };
