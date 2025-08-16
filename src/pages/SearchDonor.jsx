@@ -64,7 +64,9 @@ const SearchDonor = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
+    <div data-aos="fade-up"
+      // data-aos-delay="300"
+      data-aos-duration="1200" className="max-w-4xl mx-auto px-4 py-10">
       <div className="flex text-center flex-col md:flex-row items-center justify-center text-4xl  md:text-5xl gap-2">
         <BiSearchAlt2 className="text-primary" />
         <h2 className=" font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">

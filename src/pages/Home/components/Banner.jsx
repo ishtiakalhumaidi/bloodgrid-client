@@ -10,19 +10,44 @@ const Banner = () => {
   return (
     <section className="relative min-h-[93vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
       <div
+        data-aos="fade-up"
+        data-aos-delay="300"
+        data-aos-duration="1200"
         className="absolute inset-0 bg-cover bg-right   -z-10"
         style={{ backgroundImage: "url('/BannerBG.svg')" }}
       ></div>
-      <img className="max-w-50" src={bannerImg} alt="" />
-      <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
+      <img
+        data-aos="fade-down"
+        data-aos-delay="300"
+        data-aos-duration="1200"
+        className="max-w-50"
+        src={bannerImg}
+        alt=""
+      />
+      <h1
+        data-aos="fade-up"
+        data-aos-delay="300"
+        data-aos-duration="1200"
+        className="text-3xl md:text-5xl font-bold leading-tight mb-4"
+      >
         Be the <span className="text-primary">Lifeline</span> Someone's Waiting
         For.
       </h1>
-      <p className="text-base md:text-lg text-base-content mb-8 max-w-xl">
+      <p
+        data-aos="zoom-in"
+        data-aos-delay="600"
+        data-aos-duration="1200"
+        className="text-base md:text-lg text-base-content mb-8 max-w-xl"
+      >
         Join our network of life-saving donors or find a hero near you — in just
         a few clicks.
       </p>
-      <div className="flex flex-col md:flex-row gap-4">
+      <div
+        data-aos="fade-left"
+        data-aos-delay="300"
+        data-aos-duration="1200"
+        className="flex flex-col md:flex-row gap-4"
+      >
         {user && role == "donor" ? (
           <Link
             to={"/dashboard/create-donation-request"}

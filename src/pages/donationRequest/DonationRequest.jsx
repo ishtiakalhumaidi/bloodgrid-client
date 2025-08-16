@@ -64,7 +64,12 @@ const DonationRequest = () => {
       </div>
     );
   return (
-    <div className="px-4 py-12 lg:max-w-10/12 mx-auto">
+    <div
+      data-aos="fade-up"
+      // data-aos-delay="300"
+      data-aos-duration="1200"
+      className="px-4 py-12 lg:max-w-10/12 mx-auto"
+    >
       {/* Header Section */}
       <motion.div
         className="text-center mb-12"

@@ -36,12 +36,14 @@ const ContactUs = () => {
   return (
     <section className="bg-base-200 py-20 px-4 relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div  className="absolute inset-0 opacity-10">
         <div className="absolute left-0 top-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute right-0 bottom-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
       </div>
 
-      <div className="max-w-7xl mx-auto relative">
+      <div data-aos="fade-up"
+      data-aos-delay="300"
+      data-aos-duration="1200" className="max-w-7xl mx-auto relative">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

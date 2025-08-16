@@ -10,7 +10,11 @@ const Features = () => {
         <div className="absolute bottom-0 right-0 w-40 h-40 bg-accent rotate-45 translate-x-20 translate-y-20" />
       </div>
 
-      <div className="relative z-10">
+      <div
+        data-aos="fade-up"
+        data-aos-duration="1200"
+        className="relative z-10"
+      >
         <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
           What Makes{" "}
           <span className="text-primary relative">

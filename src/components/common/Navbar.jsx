@@ -72,7 +72,9 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-base-200 fixed w-full top-0 z-50">
+    <div data-aos="fade-down"
+      data-aos-delay="300"
+      data-aos-duration="1200" className="bg-base-200 fixed w-full top-0 z-50">
       <Container>
         <div className="navbar">
           <div className="navbar-start">
