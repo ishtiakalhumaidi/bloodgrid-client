@@ -142,7 +142,7 @@ const Banner = () => {
                 src={bannerImg}
                 alt="Blood Donation"
                 className="w-full h-auto object-contain"
-                animate={{ y: [0, -10, 0] }}
+                animate={{ y: [0, -10, 0], x: [-20, 0, -20] }}
                 transition={{
                   duration: 4,
                   repeat: Infinity,
