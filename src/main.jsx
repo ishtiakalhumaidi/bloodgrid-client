@@ -21,6 +21,7 @@ createRoot(document.getElementById("root")).render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <RouterProvider router={router} />
+           
           <Tooltip id="my-tooltip" />
         </AuthProvider>
       </QueryClientProvider>

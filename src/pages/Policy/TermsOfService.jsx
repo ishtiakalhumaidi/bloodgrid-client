@@ -12,7 +12,7 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-base-100">
       {/* Header */}
-      <div className="bg-secondary text-secondary-content py-16">
+      <div className=" py-16">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center gap-3 mb-4">
             <FaFileAlt className="w-8 h-8" />
@@ -70,7 +70,7 @@ const TermsOfService = () => {
             </h2>
 
             <div className="space-y-6">
-              <div className="card bg-accent text-accent-content shadow-sm">
+              <div className="card bg-primary text-accent-content shadow-sm">
                 <div className="card-body">
                   <h3 className="card-title">Eligibility Requirements</h3>
                   <ul className="list-disc list-inside space-y-2">
@@ -121,12 +121,12 @@ const TermsOfService = () => {
           {/* User Roles & Responsibilities */}
           <section className="mb-12">
             <h2 className="text-2xl font-bold text-base-content mb-6 flex items-center gap-2">
-              <FaHeart className="w-6 h-6 text-error" />
+              <FaHeart className="w-6 h-6 text-primary" />
               User Roles & Responsibilities
             </h2>
 
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="card bg-error text-error-content shadow-sm">
+              <div className="card bg-primary text-error-content shadow-sm">
                 <div className="card-body">
                   <h3 className="card-title">Donors 🩸</h3>
                   <ul className="list-disc list-inside space-y-2 text-sm">
