@@ -18,12 +18,14 @@ import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useMutation } from "@tanstack/react-query";
 import useAxios from "../../../hooks/useAxios";
+import { IoWarningOutline } from "react-icons/io5";
 
 const Login = () => {
   const { loginUser } = useAuth();
   const location = useLocation();
   const toRedirect = location.state?.from || "/";
   const navigate = useNavigate();
+  const [loadingRole, setLoadingRole] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const axiosInstance = useAxios();
@@ -33,6 +35,42 @@ const Login = () => {
       return await axiosInstance.patch(`/users/${email}/last-login`);
     },
   });
+
+  const demoAccounts = {
+    Admin: { email: "ishtiakalhumaidi@gmail.com", password: "123456" },
+    Volunteer: { email: "ishtiak@gmail.com", password: "123456" },
+    Donor: { email: "ishtiakalhomaidi@gmail.com", password: "123456" },
+  };
+  // demo function for login
+  const handleDemoLogin = async (role) => {
+    setLoadingRole(role);
+    const { email, password } = demoAccounts[role];
+
+    try {
+      const res = await loginUser(email, password);
+      if (res.user) {
+        updateLastLogin(res.user?.email);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: `${role} Login Successful`,
+          text: "Welcome to BloodGrid!",
+          showConfirmButton: false,
+          timer: 1600,
+        });
+        navigate(toRedirect);
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Demo Login Failed",
+        text: "Something went wrong. Try again.",
+        timer: 1800,
+      });
+    } finally {
+      setLoadingRole(null);
+    }
+  };
 
   const {
     register,
@@ -158,12 +196,12 @@ const Login = () => {
                         <FaLock className="text-primary" />
                         Password
                       </span>
-                      <Link
+                      {/* <Link
                         to="/forgot-password"
                         className="label-text-alt link link-primary"
                       >
                         Forgot Password?
-                      </Link>
+                      </Link> */}
                     </label>
                     <div className="relative">
                       <input
@@ -228,6 +266,42 @@ const Login = () => {
                     )}
                   </button>
                 </form>
+                {/* demo button for experience */}
+                <div className="divider my-1">Demo Accounts</div>
+                <p className="text-center text-sm text-base-content/60 mb-2">
+                  Sign in quickly as one of these roles:
+                </p>
+
+                <div className="flex justify-center gap-4">
+                  {["Admin", "Volunteer", "Donor"].map((role) => (
+                    <button
+                      key={role}
+                      className="btn btn-primary"
+                      disabled={loadingRole !== null}
+                      onClick={() => handleDemoLogin(role)}
+                    >
+                      {loadingRole === role ? (
+                        <>
+                          <span className="loading loading-spinner"></span>
+                          Signing in...
+                        </>
+                      ) : (
+                        role
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex gap-2 items-start text-sm text-warning mt-2">
+                  <IoWarningOutline className="mt-1" />
+                  <p>
+                    If you switch roles, refresh with{" "}
+                    <kbd className="kbd kbd-sm">Ctrl</kbd> +{" "}
+                    <kbd className="kbd kbd-sm">Shift</kbd> +{" "}
+                    <kbd className="kbd kbd-sm">R</kbd> for the best experience.
+                  </p>
+                </div>
+
                 <div className="divider my-1"></div>
 
                 {/* Registration Link */}
