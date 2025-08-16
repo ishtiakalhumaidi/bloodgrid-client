@@ -72,7 +72,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-base-200">
+    <div className="bg-base-200 fixed w-full top-0 z-50">
       <Container>
         <div className="navbar">
           <div className="navbar-start">
